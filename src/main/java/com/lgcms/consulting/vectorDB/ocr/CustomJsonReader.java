@@ -1,4 +1,4 @@
-package com.lgcms.consulting.domain.vectorDB.ocr;
+package com.lgcms.consulting.vectorDB.ocr;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.reader.JsonReader;

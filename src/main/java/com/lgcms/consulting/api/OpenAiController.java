@@ -1,10 +1,8 @@
 package com.lgcms.consulting.api;
 
-import com.lgcms.consulting.domain.openai.service.OpenAiService;
+import com.lgcms.consulting.ai.openai.service.OpenAiService;
 import lombok.AllArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.model.ChatResponse;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

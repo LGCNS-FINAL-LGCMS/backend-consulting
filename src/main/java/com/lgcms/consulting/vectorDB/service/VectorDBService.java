@@ -1,10 +1,8 @@
-package com.lgcms.consulting.domain.vectorDB.service;
+package com.lgcms.consulting.vectorDB.service;
 
-import com.lgcms.consulting.domain.vectorDB.ocr.CustomJsonReader;
+import com.lgcms.consulting.vectorDB.ocr.CustomJsonReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
-import org.springframework.ai.transformer.splitter.TextSplitter;
-import org.springframework.ai.transformer.splitter.TokenTextSplitter;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
