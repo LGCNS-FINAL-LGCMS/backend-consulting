@@ -62,9 +62,28 @@ public class OpenAiService {
 
         Prompt prompt = new Prompt
                 ("""
-                       당신은 데이터 분석가 입니다.
-                       수강생들의 수강평을 분석해서 난이도의 적절성, 강의 내용의 유익함, 건의사항을 정리해서 보여주세요.
-                       그리고 가장 많이 나온 질문은 무엇인지 분석해주세요.
+                        **Prompt:**
+                        
+                        Analyze lecture reviews, ratings, and frequently asked questions from a learning platform and provide concise feedback for the instructor using the JSON structure below.
+                        
+                        Requirements:
+                        - For "advantage", summarize suitability of difficulty, usefulness of content, and overall star ratings into up to 3 single-sentence bullet points.
+                        - For "weakness", analyze complaints or requests from reviews, summarizing up to 3 distinct points (leave empty if not present).
+                        - For "question", summarize the most commonly asked question(s).
+                        - For “summary”, write an overall evaluation of the lecture in up to 3 sentences as one paragraph.
+                        - Respond in Korean.
+                        
+                        **JSON Structure:**
+                        ```
+                        {
+                          "advantage": [],
+                          "weakness": [],
+                          "question": [],
+                          "summary": ""
+                        }
+                        ```
+                        
+                        Ensure your feedback is based on the data and is concise, objective, and informative for the instructor.
                        """
                 );
 
