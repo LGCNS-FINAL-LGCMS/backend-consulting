@@ -7,6 +7,7 @@ spring:
     username: ${DB_USERNAME}
     password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
+
   jpa:
     show-sql: false
     database: postgresql
@@ -30,3 +31,17 @@ spring:
         dimensions: 1536
         initialize-schema: true
         schema-validation: true
+
+  cloud:
+    openfeign:
+      client:
+        config:
+          RemoteLectureService:
+            url: http://localhost:8081
+
+  batch:
+    job:
+      enabled: false
+    jdbc:
+      initialize-schema: always
+      schema: classpath:org/springframework/batch/core/schema-postgresql.sql
