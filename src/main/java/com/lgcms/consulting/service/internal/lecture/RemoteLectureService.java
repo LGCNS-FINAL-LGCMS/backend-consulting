@@ -1,6 +1,6 @@
-package com.lgcms.consulting.remote.lesson;
+package com.lgcms.consulting.service.internal.lecture;
 
-import com.lgcms.consulting.remote.lesson.dto.RemoteLectureResponse;
+import com.lgcms.consulting.dto.response.lecture.RemoteLectureResponse;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,6 +1,5 @@
-package com.lgcms.consulting.vectorDB.service;
+package com.lgcms.consulting.service.vectorDB;
 
-import com.lgcms.consulting.vectorDB.ocr.CustomJsonReader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;

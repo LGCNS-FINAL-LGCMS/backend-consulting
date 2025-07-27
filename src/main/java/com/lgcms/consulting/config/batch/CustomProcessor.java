@@ -4,7 +4,7 @@ import com.lgcms.consulting.domain.Enrollment;
 import com.lgcms.consulting.domain.Lecture;
 import com.lgcms.consulting.domain.Question;
 import com.lgcms.consulting.domain.Review;
-import com.lgcms.consulting.remote.lesson.dto.RemoteLectureResponse.*;
+import com.lgcms.consulting.dto.response.lecture.RemoteLectureResponse.*;
 import org.springframework.batch.item.ItemProcessor;
 import org.springframework.stereotype.Component;
 

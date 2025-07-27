@@ -1,4 +1,4 @@
-package com.lgcms.consulting.remote.lesson.dto;
+package com.lgcms.consulting.dto.response.lecture;
 
 import com.lgcms.consulting.domain.Enrollment;
 import com.lgcms.consulting.domain.Lecture;

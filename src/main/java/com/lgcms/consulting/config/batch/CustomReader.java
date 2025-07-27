@@ -1,12 +1,9 @@
 package com.lgcms.consulting.config.batch;
 
-import com.lgcms.consulting.remote.lesson.RemoteLectureService;
-import com.lgcms.consulting.remote.lesson.dto.RemoteLectureResponse.*;
+import com.lgcms.consulting.service.internal.lecture.RemoteLectureService;
+import com.lgcms.consulting.dto.response.lecture.RemoteLectureResponse.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.ItemReader;
-import org.springframework.batch.item.NonTransientResourceException;
-import org.springframework.batch.item.ParseException;
-import org.springframework.batch.item.UnexpectedInputException;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
