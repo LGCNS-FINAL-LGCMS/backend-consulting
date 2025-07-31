@@ -1,4 +1,4 @@
-package com.lgcms.consulting.ai.openai.service;
+package com.lgcms.consulting.service.ai;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
