@@ -23,4 +23,12 @@ public class DashBoardController {
     public ResponseEntity<BaseResponse<ProfitDistributionResponse>> getProfitDistribution(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitDistribution(id)));
     }
+
+    @GetMapping("/profit-overview")
+    public ResponseEntity<BaseResponse<ProfitOverviewResponse>> getProfitOverview(
+            @RequestHeader("X-USER-ID") Long id,
+            @RequestParam("startDate") String startDate,
+            @RequestParam("endDate") String endDate) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(startDate, endDate, id)));
+    }
  }

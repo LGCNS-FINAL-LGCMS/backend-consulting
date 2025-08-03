@@ -1,6 +1,7 @@
 package com.lgcms.consulting.repository;
 
 import com.lgcms.consulting.domain.Enrollment;
+import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.ProfitOverviewTransfer;
 import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.MonthlyStatusItem;
 import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.ProfitTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;

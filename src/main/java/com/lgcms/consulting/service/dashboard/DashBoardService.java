@@ -56,6 +56,16 @@ public class DashBoardService {
         return new ProfitDistributionResponse(profits.keySet().stream().toList(), convert(profits));
     }
 
+    @Transactional
+    public ProfitOverviewResponse getProfitOverview(String startDate, String endDate, Long memberId) {
+        List<ProfitOverviewTransfer> responses = enrollmentRepository.findProfitOverviewByMemberId(LocalDate.parse(startDate), LocalDate.parse(endDate), memberId);
+        if (responses.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+
+        return new ProfitOverviewResponse("매출", responses);
+    }
+
     List<Map<String, Object>> convert(MultiValueMap<String, LectureProfitItem> profits) {
         List<Map<String, Object>> results = new ArrayList<>();
 

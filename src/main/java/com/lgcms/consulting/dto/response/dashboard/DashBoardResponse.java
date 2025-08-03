@@ -1,5 +1,6 @@
 package com.lgcms.consulting.dto.response.dashboard;
 
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -33,6 +34,18 @@ public class DashBoardResponse {
             Date day,
             String title,
             Long profit
+    ) {
+    }
+
+    public record ProfitOverviewResponse(
+            String id,
+            List<ProfitOverviewTransfer> data
+    ) {
+    }
+
+    public record ProfitOverviewTransfer(
+            Date x,
+            BigDecimal y
     ) {
     }
 }
