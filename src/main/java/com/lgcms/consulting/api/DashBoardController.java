@@ -18,4 +18,9 @@ public class DashBoardController {
     public ResponseEntity<BaseResponse<MonthlyStatusResponse>> getMonthlyStatus(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getMonthlyStatus(id)));
     }
+
+    @PostMapping("/profit")
+    public ResponseEntity<BaseResponse<ProfitDistributionResponse>> getProfitDistribution(@RequestHeader("X-USER-ID") Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitDistribution(id)));
+    }
  }

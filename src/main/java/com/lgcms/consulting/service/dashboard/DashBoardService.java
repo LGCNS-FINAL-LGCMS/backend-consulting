@@ -8,9 +8,14 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Service
@@ -32,5 +37,38 @@ public class DashBoardService {
 
         Long total = monthlyStatusItems.stream().mapToLong(MonthlyStatusItem::value).sum();
         return new MonthlyStatusResponse(total, monthlyStatusItems);
+    }
+
+    @Transactional
+    public ProfitDistributionResponse getProfitDistribution(Long memberId) {
+        LocalDate now = LocalDate.now();
+        LocalDate startDate = now.minusWeeks(1);
+        List<ProfitTransfer> dailyProfits = enrollmentRepository.findProfitByDateAndLectureId(startDate, now, memberId);
+        if (dailyProfits.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+
+        MultiValueMap<String, LectureProfitItem> profits = new LinkedMultiValueMap<>();
+        for (ProfitTransfer item : dailyProfits) {
+            profits.add(item.day().toString(), new LectureProfitItem(item.title(), item.profit()));
+        }
+
+        return new ProfitDistributionResponse(profits.keySet().stream().toList(), convert(profits));
+    }
+
+    List<Map<String, Object>> convert(MultiValueMap<String, LectureProfitItem> profits) {
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        profits.forEach((k, v) -> {
+            Map<String, Object> resultItem = new HashMap<>();
+            Long dailyTotal = v.stream().mapToLong(LectureProfitItem::profit).sum();
+            for (LectureProfitItem item : v) {
+                resultItem.put(item.title(), Math.round((double) item.profit() / dailyTotal * 100));
+            }
+            resultItem.put("day", k);
+            results.add(resultItem);
+        });
+
+        return results;
     }
 }
