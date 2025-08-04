@@ -38,9 +38,15 @@ public class DashBoardController {
     public ResponseEntity<BaseResponse<List<CompleteProgressResponse>>> getCompleteProgress(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getCompleteProgress(id)));
     }
- }
 
     @GetMapping("/progress-group")
     public ResponseEntity<BaseResponse<List<ProgressGroupResponse>>> getProgressGroup(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id)));
     }
+
+    @GetMapping("/lecture-count")
+    public ResponseEntity<BaseResponse<List<LectureCountPerStudentResponse>>> getLectureCountPerStudent(@RequestHeader("X-USER-ID") Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getLectureCountPerStudent(id)));
+    }
+
+}

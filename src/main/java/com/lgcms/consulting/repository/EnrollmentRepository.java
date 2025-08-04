@@ -47,4 +47,40 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             @Param("endDate") LocalDate endDate,
             @Param("memberId") Long memberId
     );
+
+    @Query(value = """
+            SELECT t.count AS lecture_count, COUNT(*) as student_count
+            FROM (
+                     SELECT e.student_id, COUNT(*) as count
+                     FROM enrollment e
+                     JOIN lecture l ON e.lecture_id = l.id
+                     WHERE l.member_id = :memberId
+                     GROUP BY e.student_id
+                 ) t
+            GROUP BY lecture_count
+            ORDER BY lecture_count
+            """, nativeQuery = true)
+    List<LectureCountPerStudentResponse> countEnrollmentByMemberId(
+            @Param("memberId") Long memberId
+    );
+
+    @Query(value = """
+            SELECT t.day , SUM( profit ) AS profits
+            FROM (
+                     SELECT DATE(e.enrollment_at) AS day, COUNT(*) * l.price as profit
+                     FROM enrollment e
+                              JOIN lecture l ON e.lecture_id = l.id
+                     WHERE l.member_id = :memberId
+                                 AND e.enrollment_at >= :startDate
+                                 AND e.enrollment_at <= :endDate
+                     GROUP BY day, l.price
+                 ) t
+            GROUP BY day
+            ORDER BY day
+            """, nativeQuery = true)
+    List<ProfitOverviewTransfer> findProfitOverviewByMemberId(
+            @Param("startDate") LocalDate startDate,
+            @Param("endDate") LocalDate endDate,
+            @Param("memberId") Long memberId
+    );
 }

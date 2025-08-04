@@ -69,4 +69,11 @@ public class DashBoardResponse {
             Long studentCount
     ) {
     }
+
+    public record LectureCountPerStudentResponse(
+            Long id,
+            Long value
+    ) {
+    }
+
 }
