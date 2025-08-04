@@ -39,3 +39,8 @@ public class DashBoardController {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getCompleteProgress(id)));
     }
  }
+
+    @GetMapping("/progress-group")
+    public ResponseEntity<BaseResponse<List<ProgressGroupResponse>>> getProgressGroup(@RequestHeader("X-USER-ID") Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id)));
+    }

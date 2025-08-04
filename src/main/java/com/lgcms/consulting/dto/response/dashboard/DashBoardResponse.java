@@ -63,4 +63,10 @@ public class DashBoardResponse {
             return new CompleteProgressResponse(title, completeProgress.longValue());
         }
     }
+
+    public record ProgressGroupResponse(
+            String group,
+            Long studentCount
+    ) {
+    }
 }

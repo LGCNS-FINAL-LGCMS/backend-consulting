@@ -79,6 +79,24 @@ public class DashBoardService {
                 .map(n -> CompleteProgressTransfer.toDTO(n.title(), n.completeProgress())).collect(Collectors.toList());
     }
 
+    @Transactional
+    public List<ProgressGroupResponse> getProgressGroup(Long memberId) {
+        List<ProgressGroupResponse> responses = progressRepository.findProgressGroupByMemberId(memberId);
+        if (responses.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+        return responses;
+    }
+
+    @Transactional
+    public List<LectureCountPerStudentResponse> getLectureCountPerStudent(Long memberId) {
+        List<LectureCountPerStudentResponse> responses = enrollmentRepository.countEnrollmentByMemberId(memberId);
+        if (responses.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+        return responses;
+    }
+
     List<Map<String, Object>> convert(MultiValueMap<String, LectureProfitItem> profits) {
         List<Map<String, Object>> results = new ArrayList<>();
 
