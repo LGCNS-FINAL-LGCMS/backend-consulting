@@ -16,12 +16,12 @@ public class DashBoardController {
 
     private final DashBoardService dashBoardService;
 
-    @PostMapping("/status")
+    @GetMapping("/status")
     public ResponseEntity<BaseResponse<MonthlyStatusResponse>> getMonthlyStatus(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getMonthlyStatus(id)));
     }
 
-    @PostMapping("/profit")
+    @GetMapping("/profit")
     public ResponseEntity<BaseResponse<ProfitDistributionResponse>> getProfitDistribution(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitDistribution(id)));
     }
