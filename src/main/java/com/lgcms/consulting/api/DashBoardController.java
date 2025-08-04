@@ -7,6 +7,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RequestMapping("/dashboard")
 @RestController
 @RequiredArgsConstructor
@@ -30,5 +32,10 @@ public class DashBoardController {
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(startDate, endDate, id)));
+    }
+
+    @GetMapping("/progress")
+    public ResponseEntity<BaseResponse<List<CompleteProgressResponse>>> getCompleteProgress(@RequestHeader("X-USER-ID") Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getCompleteProgress(id)));
     }
  }

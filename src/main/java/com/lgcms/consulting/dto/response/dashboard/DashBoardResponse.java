@@ -48,4 +48,19 @@ public class DashBoardResponse {
             BigDecimal y
     ) {
     }
+
+    public record CompleteProgressResponse(
+            String title,
+            Long completeProgress
+    ) {
+    }
+
+    public record CompleteProgressTransfer(
+            String title,
+            BigDecimal completeProgress
+    ) {
+        public static CompleteProgressResponse toDTO(String title, BigDecimal completeProgress) {
+            return new CompleteProgressResponse(title, completeProgress.longValue());
+        }
+    }
 }

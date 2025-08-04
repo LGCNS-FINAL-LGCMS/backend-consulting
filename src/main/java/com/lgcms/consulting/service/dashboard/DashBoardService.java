@@ -4,6 +4,7 @@ import com.lgcms.consulting.common.dto.exception.BaseException;
 import com.lgcms.consulting.common.dto.exception.ConsultingError;
 import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.*;
 import com.lgcms.consulting.repository.EnrollmentRepository;
+import com.lgcms.consulting.repository.ProgressRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -23,6 +25,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class DashBoardService {
     private final EnrollmentRepository enrollmentRepository;
+    private final ProgressRepository progressRepository;
 
     @Transactional
     public MonthlyStatusResponse getMonthlyStatus(Long memberId) {
@@ -64,6 +67,16 @@ public class DashBoardService {
         }
 
         return new ProfitOverviewResponse("매출", responses);
+    }
+
+    @Transactional
+    public List<CompleteProgressResponse> getCompleteProgress(Long memberId) {
+        List<CompleteProgressTransfer> responses = progressRepository.findCompleteProgressByMemberId(memberId);
+        if (responses.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+        return responses.stream()
+                .map(n -> CompleteProgressTransfer.toDTO(n.title(), n.completeProgress())).collect(Collectors.toList());
     }
 
     List<Map<String, Object>> convert(MultiValueMap<String, LectureProfitItem> profits) {
