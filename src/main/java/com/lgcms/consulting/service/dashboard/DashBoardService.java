@@ -89,6 +89,15 @@ public class DashBoardService {
     }
 
     @Transactional
+    public List<ProgressGroupResponse> getProgressGroupAll(Long memberId, String title) {
+        List<ProgressGroupResponse> responses = progressRepository.findProgressGroupByMemberIdAndTitle(memberId, title);
+        if (responses.isEmpty()) {
+            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+        }
+        return responses;
+    }
+
+    @Transactional
     public List<LectureCountPerStudentResponse> getLectureCountPerStudent(Long memberId) {
         List<LectureCountPerStudentResponse> responses = enrollmentRepository.countEnrollmentByMemberId(memberId);
         if (responses.isEmpty()) {

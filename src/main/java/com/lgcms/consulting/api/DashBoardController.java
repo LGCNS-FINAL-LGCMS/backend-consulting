@@ -40,8 +40,16 @@ public class DashBoardController {
     }
 
     @GetMapping("/progress-group")
-    public ResponseEntity<BaseResponse<List<ProgressGroupResponse>>> getProgressGroup(@RequestHeader("X-USER-ID") Long id) {
-        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id)));
+    public ResponseEntity<BaseResponse<List<ProgressGroupResponse>>> getProgressGroup(
+            @RequestHeader("X-USER-ID") Long id,
+            @RequestParam(value = "title", defaultValue = "all" , required = false) String title
+    ) {
+        if (title.equals("all")) {
+            return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id)));
+        }
+        else{
+            return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroupAll(id, title)));
+        }
     }
 
     @GetMapping("/lecture-count")
