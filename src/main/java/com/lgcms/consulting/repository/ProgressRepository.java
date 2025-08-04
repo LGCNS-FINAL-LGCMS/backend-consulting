@@ -1,6 +1,7 @@
 package com.lgcms.consulting.repository;
 
 import com.lgcms.consulting.domain.Progress;
+import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.ProgressGroupResponse;
 import com.lgcms.consulting.dto.response.dashboard.DashBoardResponse.CompleteProgressTransfer;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -43,7 +44,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
             ORDER BY
                 rate_group;
             """, nativeQuery = true)
-    List<DashBoardResponse.ProgressGroupResponse> findProgressGroupByMemberId(@Param("memberId") Long memberId);
+    List<ProgressGroupResponse> findProgressGroupByMemberId(@Param("memberId") Long memberId);
 
     @Query(value = """
             SELECT
@@ -70,7 +71,7 @@ public interface ProgressRepository extends JpaRepository<Progress, Long> {
             ORDER BY
                 rate_group;
             """, nativeQuery = true)
-    List<DashBoardResponse.ProgressGroupResponse> findProgressGroupByMemberIdAndTitle(
+    List<ProgressGroupResponse> findProgressGroupByMemberIdAndTitle(
             @Param("memberId") Long memberId,
             @Param("lectureTitle") String lectureTitle
     );
