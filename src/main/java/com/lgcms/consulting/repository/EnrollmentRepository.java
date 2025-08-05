@@ -14,15 +14,15 @@ import java.util.List;
 
 public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     @Query(value = """
-                        SELECT e.lecture_id,
+                        SELECT l.title,
                             COUNT(*) * l.price AS value
                         FROM enrollment e
                         JOIN lecture l ON e.lecture_id = l.id
                         WHERE e.enrollment_at >= :startDate
                                     AND e.enrollment_at <= :endDate    
                                     AND l.member_id = :memberId
-                        GROUP BY e.lecture_id, l.price
-                        ORDER BY lecture_id
+                        GROUP BY l.title, l.price
+                        ORDER BY l.title
             """, nativeQuery = true)
     List<MonthlyStatusItem> findMonthlyStatusByMemberId(
             @Param("startDate") LocalDate startDate,
@@ -40,7 +40,7 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
                                     AND e.enrollment_at <= :endDate    
                                     AND l.member_id = :memberId
                         GROUP BY DATE(e.enrollment_at), l.title , l.price
-                        ORDER BY day, lecture_id
+                        ORDER BY day, l.title
             """, nativeQuery = true)
     List<ProfitTransfer> findProfitByDateAndLectureId(
             @Param("startDate") LocalDate startDate,
