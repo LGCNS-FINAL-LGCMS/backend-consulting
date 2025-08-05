@@ -50,13 +50,14 @@ public class DashBoardService {
         if (dailyProfits.isEmpty()) {
             throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
         }
+        List<String> titles = dailyProfits.stream().map(ProfitTransfer::title).distinct().toList();
 
         MultiValueMap<String, LectureProfitItem> profits = new LinkedMultiValueMap<>();
         for (ProfitTransfer item : dailyProfits) {
             profits.add(item.day().toString(), new LectureProfitItem(item.title(), item.profit()));
         }
 
-        return new ProfitDistributionResponse(profits.keySet().stream().toList(), convert(profits));
+        return new ProfitDistributionResponse(titles, convert(profits));
     }
 
     @Transactional

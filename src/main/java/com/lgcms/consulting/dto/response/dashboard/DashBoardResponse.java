@@ -13,7 +13,7 @@ public class DashBoardResponse {
     }
 
     public record MonthlyStatusItem(
-            Long id,
+            String id,
             Long value
     ) {
     }
