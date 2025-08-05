@@ -38,3 +38,5 @@ out/
 
 ### VS Code ###
 .vscode/
+
+/src/main/java/com/lgcms/consulting/config/WebConfig.java
