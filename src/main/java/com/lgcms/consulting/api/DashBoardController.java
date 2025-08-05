@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RequestMapping("/dashboard")
+@RequestMapping("/api/consulting/dashboard")
 @RestController
 @RequiredArgsConstructor
 public class DashBoardController {
