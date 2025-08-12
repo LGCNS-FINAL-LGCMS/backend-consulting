@@ -16,17 +16,17 @@ public class DashBoardController {
 
     private final DashBoardService dashBoardService;
 
-    @GetMapping("/status")
+    @GetMapping("/status/month")
     public ResponseEntity<BaseResponse<MonthlyStatusResponse>> getMonthlyStatus(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getMonthlyStatus(id)));
     }
 
-    @GetMapping("/profit")
+    @GetMapping("/profit/distribution")
     public ResponseEntity<BaseResponse<ProfitDistributionResponse>> getProfitDistribution(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitDistribution(id)));
     }
 
-    @GetMapping("/profit-overview")
+    @GetMapping("/profit/overview")
     public ResponseEntity<BaseResponse<ProfitOverviewResponse>> getProfitOverview(
             @RequestHeader("X-USER-ID") Long id,
             @RequestParam("startDate") String startDate,
@@ -34,13 +34,15 @@ public class DashBoardController {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(startDate, endDate, id)));
     }
 
-    @GetMapping("/progress")
-    public ResponseEntity<BaseResponse<List<CompleteProgressResponse>>> getCompleteProgress(@RequestHeader("X-USER-ID") Long id) {
+    @GetMapping("/progress/complete")
+
+    public ResponseEntity<BaseResponse<CompleteProgressResponse>> getCompleteProgress(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getCompleteProgress(id)));
     }
 
-    @GetMapping("/progress-group")
-    public ResponseEntity<BaseResponse<List<ProgressGroupResponse>>> getProgressGroup(
+    @GetMapping("/progress/group")
+
+    public ResponseEntity<BaseResponse<ProgressGroupResponse>> getProgressGroup(
             @RequestHeader("X-USER-ID") Long id,
             @RequestParam(value = "title", defaultValue = "all" , required = false) String title
     ) {
@@ -52,9 +54,10 @@ public class DashBoardController {
         }
     }
 
-    @GetMapping("/lecture-count")
-    public ResponseEntity<BaseResponse<List<LectureCountPerStudentResponse>>> getLectureCountPerStudent(@RequestHeader("X-USER-ID") Long id) {
-        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getLectureCountPerStudent(id)));
+    @GetMapping("/lecture/count")
+
+    public ResponseEntity<BaseResponse<StudentLectureCountResponse>> getStudentLectureCount(@RequestHeader("X-USER-ID") Long id) {
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getStudentLectureCount(id)));
     }
 
 }
