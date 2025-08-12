@@ -66,7 +66,6 @@ public class DashBoardService {
     public ProfitOverviewResponse getProfitOverview(String title, String startDate, String endDate, Long memberId) {
         List<DailyProfit> dailyProfits = dailyProfitRepository.findByTitleAndMemberIdAndDayBetween(title, memberId, LocalDate.parse(startDate).atStartOfDay(), LocalDate.parse(endDate).atStartOfDay());
         if (dailyProfits.isEmpty()) {
-            log.info(title + " - " + memberId + " - " + LocalDate.parse(startDate).atStartOfDay() + " - " + LocalDate.parse(endDate).atStartOfDay());
             throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
         }
 
