@@ -65,10 +65,11 @@ public class DailyProfitBatch {
                             SUM(l.price) AS profit
                         FROM enrollment e
                                  JOIN lecture l ON e.lecture_id = l.id
+                        WHERE DATE(e.enrollment_at) = ?
                         GROUP BY DATE(e.enrollment_at), l.member_id, ROLLUP(l.title)
                         ORDER BY day, l.member_id, title;
                         """)
-//                .queryArguments(List.of(today.toLocalDate()))
+                .queryArguments(List.of(today.toLocalDate()))
                 .fetchSize(1000)
                 .dataRowMapper(DailyProfitDTO.class)
                 .build();
