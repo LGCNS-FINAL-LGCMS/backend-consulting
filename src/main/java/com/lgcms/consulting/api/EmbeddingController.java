@@ -1,6 +1,6 @@
 package com.lgcms.consulting.api;
 
-import com.lgcms.consulting.vectorDB.service.VectorDBService;
+import com.lgcms.consulting.service.vectorDB.VectorDBService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
