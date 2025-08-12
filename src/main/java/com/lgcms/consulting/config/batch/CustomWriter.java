@@ -21,31 +21,27 @@ public class CustomWriter {
     private final QuestionRepository questionRepository;
     private final ReviewRepository reviewRepository;
 
-    public RepositoryItemWriter<Lecture> lectureWriter(){
+    public RepositoryItemWriter<Lecture> lectureWriter() {
         return new RepositoryItemWriterBuilder<Lecture>()
                 .repository(lectureRepository)
-                .methodName("save")
                 .build();
     }
 
-    public RepositoryItemWriter<Enrollment> enrollmentWriter(){
+    public RepositoryItemWriter<Enrollment> enrollmentWriter() {
         return new RepositoryItemWriterBuilder<Enrollment>()
                 .repository(enrollmentRepository)
-                .methodName("save")
                 .build();
     }
 
-    public RepositoryItemWriter<Question> questionWriter(){
+    public RepositoryItemWriter<Question> questionWriter() {
         return new RepositoryItemWriterBuilder<Question>()
                 .repository(questionRepository)
-                .methodName("save")
                 .build();
     }
 
-    public RepositoryItemWriter<Review> reviewWriter(){
+    public RepositoryItemWriter<Review> reviewWriter() {
         return new RepositoryItemWriterBuilder<Review>()
                 .repository(reviewRepository)
-                .methodName("save")
                 .build();
     }
 }

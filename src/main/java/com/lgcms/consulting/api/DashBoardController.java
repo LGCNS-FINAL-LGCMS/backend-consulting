@@ -7,8 +7,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
-
 @RequestMapping("/api/consulting/dashboard")
 @RestController
 @RequiredArgsConstructor
@@ -29,33 +27,26 @@ public class DashBoardController {
     @GetMapping("/profit/overview")
     public ResponseEntity<BaseResponse<ProfitOverviewResponse>> getProfitOverview(
             @RequestHeader("X-USER-ID") Long id,
+            @RequestParam(value = "title", defaultValue = "all", required = false) String title,
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate) {
-        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(startDate, endDate, id)));
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(title, startDate, endDate, id)));
     }
 
     @GetMapping("/progress/complete")
-
     public ResponseEntity<BaseResponse<CompleteProgressResponse>> getCompleteProgress(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getCompleteProgress(id)));
     }
 
     @GetMapping("/progress/group")
-
     public ResponseEntity<BaseResponse<ProgressGroupResponse>> getProgressGroup(
             @RequestHeader("X-USER-ID") Long id,
-            @RequestParam(value = "title", defaultValue = "all" , required = false) String title
+            @RequestParam(value = "title", defaultValue = "all", required = false) String title
     ) {
-        if (title.equals("all")) {
-            return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id)));
-        }
-        else{
-            return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroupAll(id, title)));
-        }
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProgressGroup(id, title)));
     }
 
     @GetMapping("/lecture/count")
-
     public ResponseEntity<BaseResponse<StudentLectureCountResponse>> getStudentLectureCount(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getStudentLectureCount(id)));
     }

@@ -1,26 +1,19 @@
 package com.lgcms.consulting.dto.response.dashboard;
 
-import java.math.BigDecimal;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 public class DashBoardResponse {
     public record MonthlyStatusResponse(
             Long total,
-            List<MonthlyStatusItem> monthlyStatus
-    ) {
-    }
-
-    public record MonthlyStatusItem(
-            String id,
-            Long value
+            List<PieChartData> monthlyStatus
     ) {
     }
 
     public record ProfitDistributionResponse(
-            List<String> titles,
-            List<Map<String, Object>> profits
+            String index,
+            List<String> keyList,
+            List<Map<String, String>> dataList
     ) {
     }
 
@@ -30,49 +23,52 @@ public class DashBoardResponse {
     ) {
     }
 
-    public record ProfitTransfer(
-            Date day,
-            String title,
-            Long profit
-    ) {
-    }
-
     public record ProfitOverviewResponse(
             String id,
-            List<ProfitOverviewTransfer> data
-    ) {
-    }
-
-    public record ProfitOverviewTransfer(
-            Date x,
-            BigDecimal y
+            List<LineChartData> data
     ) {
     }
 
     public record CompleteProgressResponse(
-            String title,
-            Long completeProgress
+            String index,
+            List<String> keyList,
+            List<CompleteProgressData> dataList
     ) {
     }
 
-    public record CompleteProgressTransfer(
+    public record CompleteProgressData(
             String title,
-            BigDecimal completeProgress
+            String completeProgress
     ) {
-        public static CompleteProgressResponse toDTO(String title, BigDecimal completeProgress) {
-            return new CompleteProgressResponse(title, completeProgress.longValue());
-        }
     }
 
     public record ProgressGroupResponse(
-            String group,
-            Long studentCount
+            String index,
+            List<String> keyList,
+            List<ProgressGroupData> dataList
     ) {
     }
 
-    public record LectureCountPerStudentResponse(
-            Long id,
+    public record ProgressGroupData(
+            String rateGroup,
+            String studentCount
+    ) {
+    }
+
+    public record StudentLectureCountResponse(
+            List<PieChartData> data
+    ) {
+    }
+
+    public record PieChartData(
+            String id,
             Long value
+    ) {
+    }
+
+    public record LineChartData(
+            String x,
+            String y
     ) {
     }
 
