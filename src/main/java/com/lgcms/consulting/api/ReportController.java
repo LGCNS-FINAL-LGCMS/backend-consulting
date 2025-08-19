@@ -1,6 +1,7 @@
 package com.lgcms.consulting.api;
 
 import com.lgcms.consulting.common.dto.BaseResponse;
+import com.lgcms.consulting.dto.response.report.ReportResponse;
 import com.lgcms.consulting.service.ai.BedrockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class ReportController {
     private final BedrockService bedrockService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<String>> getReport(@RequestHeader("X-USER-ID") Long id) {
+    public ResponseEntity<BaseResponse<ReportResponse>> getReport(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(bedrockService.getReport(id)));
     }
 }

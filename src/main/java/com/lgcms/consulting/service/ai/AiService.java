@@ -1,5 +1,7 @@
 package com.lgcms.consulting.service.ai;
 
+import com.lgcms.consulting.dto.response.report.ReportResponse;
+
 public interface AiService {
-    public String getReport(Long memberId);
+    ReportResponse getReport(Long memberId);
 }
