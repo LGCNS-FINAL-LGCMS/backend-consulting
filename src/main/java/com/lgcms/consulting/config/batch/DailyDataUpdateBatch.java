@@ -1,5 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
+import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
 import com.lgcms.consulting.config.batch.utils.CustomReader;
 import com.lgcms.consulting.config.batch.utils.CustomWriter;
 import com.lgcms.consulting.domain.*;
@@ -23,6 +24,7 @@ public class DailyDataUpdateBatch {
     private final PlatformTransactionManager transactionManager;
     private final CustomReader customReader;
     private final CustomWriter customWriter;
+    private final BatchRetryPolicy batchRetryPolicy;
 
     @Bean
     public Job dailyDataUpdateJob() {
@@ -31,6 +33,7 @@ public class DailyDataUpdateBatch {
                 .next(questionUpdateStep())
                 .next(enrollmentUpdateStep())
                 .next(reviewUpdateStep())
+                .next(processUpdateStep())
                 .build();
     }
 
@@ -41,6 +44,9 @@ public class DailyDataUpdateBatch {
                 .reader(customReader.lectureReader())
                 .processor(LectureMetaResponse::toEntity)
                 .writer(customWriter.lectureWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 
@@ -51,6 +57,9 @@ public class DailyDataUpdateBatch {
                 .reader(customReader.questionReader())
                 .processor(LectureQuestionsResponse::toEntity)
                 .writer(customWriter.questionWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 
@@ -61,9 +70,11 @@ public class DailyDataUpdateBatch {
                 .reader(customReader.enrollmentReader())
                 .processor(LectureEnrollmentsResponse::toEntity)
                 .writer(customWriter.enrollmentWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
-
 
     @Bean
     public Step reviewUpdateStep() {
@@ -72,6 +83,9 @@ public class DailyDataUpdateBatch {
                 .reader(customReader.reviewReader())
                 .processor(LectureReviewsResponse::toEntity)
                 .writer(customWriter.reviewWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 

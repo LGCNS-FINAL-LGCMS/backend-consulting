@@ -1,5 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
+import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
 import com.lgcms.consulting.domain.CompleteProgress;
 import com.lgcms.consulting.repository.CompleteProgressRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class CompleteProgressBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final CompleteProgressRepository completeProgressRepository;
+    private final BatchRetryPolicy batchRetryPolicy;
 
     @Bean
     public Job completeProgressJob() {
@@ -41,6 +43,9 @@ public class CompleteProgressBatch {
                 .reader(completeProgressItemReader())
                 .processor(completeProgressItemProcessor())
                 .writer(completeProgressItemWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 

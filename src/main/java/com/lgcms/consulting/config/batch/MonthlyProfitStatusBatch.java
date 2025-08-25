@@ -1,5 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
+import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
 import com.lgcms.consulting.domain.MonthlyProfitStatus;
 import com.lgcms.consulting.repository.MonthlyProfitStatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +31,7 @@ public class MonthlyProfitStatusBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final MonthlyProfitStatusRepository monthlyProfitStatusRepository;
+    private final BatchRetryPolicy batchRetryPolicy;
 
     @Bean
     public Job monthlyProfitStatusJob() {
@@ -45,6 +47,9 @@ public class MonthlyProfitStatusBatch {
                 .reader(monthlyProfitStatusItemReader(null))
                 .processor(monthlyProfitStatusItemProcessor())
                 .writer(monthlyProfitStatusItemWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 
