@@ -11,7 +11,7 @@ import lombok.*;
 @AllArgsConstructor
 public class Lecture {
     @Id
-    private Long id;
+    private String id;
 
     private Long memberId;
 

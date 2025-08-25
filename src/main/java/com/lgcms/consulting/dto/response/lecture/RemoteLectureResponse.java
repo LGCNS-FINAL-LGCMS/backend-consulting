@@ -1,9 +1,6 @@
 package com.lgcms.consulting.dto.response.lecture;
 
-import com.lgcms.consulting.domain.Enrollment;
-import com.lgcms.consulting.domain.Lecture;
-import com.lgcms.consulting.domain.Question;
-import com.lgcms.consulting.domain.Review;
+import com.lgcms.consulting.domain.*;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,7 +15,7 @@ public class RemoteLectureResponse {
     }
 
     public record LectureMetaResponse(
-            Long id,
+            String id,
             Long memberId,
             String title,
             String level,
@@ -41,15 +38,26 @@ public class RemoteLectureResponse {
         }
     }
 
-    public record LectureStatusResponse(
-
+    public record LectureProgressResponse(
+        Long id,
+        Long memberId,
+        String lectureId,
+        Long progressRate
     ) {
+        public Progress toEntity() {
+            return Progress.builder()
+                    .id(id)
+                    .memberId(memberId)
+                    .lectureId(lectureId)
+                    .progressRate(progressRate)
+                    .build();
+        }
     }
 
     public record LectureQuestionsResponse(
             Long id,
             Long memberId,
-            Long lectureId,
+            String lectureId,
             String title,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
@@ -69,7 +77,7 @@ public class RemoteLectureResponse {
     public record LectureEnrollmentsResponse(
             Long id,
             Long studentId,
-            Long lectureId,
+            String lectureId,
             LocalDateTime enrollmentAt
     ) {
         public Enrollment toEntity() {
@@ -85,12 +93,12 @@ public class RemoteLectureResponse {
     public record LectureReviewsResponse(
             Long id,
             Long memberId,
-            Long lectureId,
-            String content,
-            String star,
+            String lectureId,
+            String suggestion,
+            Long star,
             String nickname,
-            String details,
-            String etc,
+            Integer difficulty,
+            Integer usefulness,
             LocalDateTime createdAt,
             LocalDateTime updatedAt
     ) {
@@ -99,11 +107,11 @@ public class RemoteLectureResponse {
                     .id(id)
                     .memberId(memberId)
                     .lectureId(lectureId)
-                    .content(content)
+                    .suggestion(suggestion)
                     .star(star)
                     .nickname(nickname)
-                    .details(details)
-                    .etc(etc)
+                    .difficulty(difficulty)
+                    .usefulness(usefulness)
                     .createdAt(createdAt)
                     .updatedAt(updatedAt)
                     .build();

@@ -18,7 +18,7 @@ public class Enrollment {
 
     private Long studentId;
 
-    private Long lectureId;
+    private String lectureId;
 
     private LocalDateTime enrollmentAt;
 }
