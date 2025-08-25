@@ -1,9 +1,8 @@
 package com.lgcms.consulting.config.batch;
 
-import com.lgcms.consulting.domain.Enrollment;
-import com.lgcms.consulting.domain.Lecture;
-import com.lgcms.consulting.domain.Question;
-import com.lgcms.consulting.domain.Review;
+import com.lgcms.consulting.config.batch.utils.CustomReader;
+import com.lgcms.consulting.config.batch.utils.CustomWriter;
+import com.lgcms.consulting.domain.*;
 import com.lgcms.consulting.dto.response.lecture.RemoteLectureResponse.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,7 +22,6 @@ public class DailyDataUpdateBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final CustomReader customReader;
-    private final CustomProcessor customProcessor;
     private final CustomWriter customWriter;
 
     @Bean
@@ -39,9 +37,9 @@ public class DailyDataUpdateBatch {
     @Bean
     public Step lectureUpdateStep() {
         return new StepBuilder("lectureUpdateStep", jobRepository)
-                .<LectureMetaResponse, Lecture>chunk(100, transactionManager)
+                .<LectureMetaResponse, Lecture>chunk(1000, transactionManager)
                 .reader(customReader.lectureReader())
-                .processor(customProcessor.lectureProcessor())
+                .processor(LectureMetaResponse::toEntity)
                 .writer(customWriter.lectureWriter())
                 .build();
     }
@@ -49,9 +47,9 @@ public class DailyDataUpdateBatch {
     @Bean
     public Step questionUpdateStep() {
         return new StepBuilder("questionUpdateStep", jobRepository)
-                .<LectureQuestionsResponse, Question>chunk(100, transactionManager)
+                .<LectureQuestionsResponse, Question>chunk(1000, transactionManager)
                 .reader(customReader.questionReader())
-                .processor(customProcessor.questionProcessor())
+                .processor(LectureQuestionsResponse::toEntity)
                 .writer(customWriter.questionWriter())
                 .build();
     }
@@ -59,9 +57,9 @@ public class DailyDataUpdateBatch {
     @Bean
     public Step enrollmentUpdateStep() {
         return new StepBuilder("enrollmentUpdateStep", jobRepository)
-                .<LectureEnrollmentsResponse, Enrollment>chunk(100, transactionManager)
+                .<LectureEnrollmentsResponse, Enrollment>chunk(10000, transactionManager)
                 .reader(customReader.enrollmentReader())
-                .processor(customProcessor.enrollmentProcessor())
+                .processor(LectureEnrollmentsResponse::toEntity)
                 .writer(customWriter.enrollmentWriter())
                 .build();
     }
@@ -70,10 +68,23 @@ public class DailyDataUpdateBatch {
     @Bean
     public Step reviewUpdateStep() {
         return new StepBuilder("reviewUpdateStep", jobRepository)
-                .<LectureReviewsResponse, Review>chunk(100, transactionManager)
+                .<LectureReviewsResponse, Review>chunk(1000, transactionManager)
                 .reader(customReader.reviewReader())
-                .processor(customProcessor.reviewProcessor())
+                .processor(LectureReviewsResponse::toEntity)
                 .writer(customWriter.reviewWriter())
+                .build();
+    }
+
+    @Bean
+    public Step processUpdateStep() {
+        return new StepBuilder("processUpdateStep", jobRepository)
+                .<LectureProgressResponse, Progress>chunk(1000, transactionManager)
+                .reader(customReader.progressReader())
+                .processor(LectureProgressResponse::toEntity)
+                .writer(customWriter.progressWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 }
