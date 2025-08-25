@@ -15,7 +15,7 @@ public class Progress {
 
     private Long memberId;
 
-    private Long lectureId;
+    private String lectureId;
 
     private Long progressRate;
 }

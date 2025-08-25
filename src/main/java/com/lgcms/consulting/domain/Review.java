@@ -18,17 +18,17 @@ public class Review {
 
     private Long memberId;
 
-    private Long lectureId;
+    private String lectureId;
 
-    private String content;
+    private String suggestion;
 
-    private String star;
+    private Long star;
 
     private String nickname;
 
-    private String details;
+    private Integer difficulty;
 
-    private String etc;
+    private Integer usefulness;
 
     private LocalDateTime createdAt;
 
