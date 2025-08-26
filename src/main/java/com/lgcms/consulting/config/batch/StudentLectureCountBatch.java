@@ -1,5 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
+import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
 import com.lgcms.consulting.domain.StudentLectureCount;
 import com.lgcms.consulting.repository.StudentLectureCountRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,7 @@ public class StudentLectureCountBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final StudentLectureCountRepository studentLectureCountRepository;
+    private final BatchRetryPolicy batchRetryPolicy;
 
     @Bean
     public Job studentLectureCountJob() {
@@ -41,6 +43,9 @@ public class StudentLectureCountBatch {
                 .reader(studentLectureCountItemReader())
                 .processor(studentLectureCountItemProcessor())
                 .writer(studentLectureCountItemWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 

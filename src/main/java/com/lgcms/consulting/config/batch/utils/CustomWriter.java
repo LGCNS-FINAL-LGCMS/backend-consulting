@@ -1,13 +1,7 @@
-package com.lgcms.consulting.config.batch;
+package com.lgcms.consulting.config.batch.utils;
 
-import com.lgcms.consulting.domain.Enrollment;
-import com.lgcms.consulting.domain.Lecture;
-import com.lgcms.consulting.domain.Question;
-import com.lgcms.consulting.domain.Review;
-import com.lgcms.consulting.repository.EnrollmentRepository;
-import com.lgcms.consulting.repository.LectureRepository;
-import com.lgcms.consulting.repository.QuestionRepository;
-import com.lgcms.consulting.repository.ReviewRepository;
+import com.lgcms.consulting.domain.*;
+import com.lgcms.consulting.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
@@ -20,6 +14,7 @@ public class CustomWriter {
     private final EnrollmentRepository enrollmentRepository;
     private final QuestionRepository questionRepository;
     private final ReviewRepository reviewRepository;
+    private final ProgressRepository progressRepository;
 
     public RepositoryItemWriter<Lecture> lectureWriter() {
         return new RepositoryItemWriterBuilder<Lecture>()
@@ -42,6 +37,12 @@ public class CustomWriter {
     public RepositoryItemWriter<Review> reviewWriter() {
         return new RepositoryItemWriterBuilder<Review>()
                 .repository(reviewRepository)
+                .build();
+    }
+
+    public RepositoryItemWriter<Progress> progressWriter() {
+        return new RepositoryItemWriterBuilder<Progress>()
+                .repository(progressRepository)
                 .build();
     }
 }

@@ -1,5 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
+import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
 import com.lgcms.consulting.domain.DailyProfit;
 import com.lgcms.consulting.repository.DailyProfitRepository;
 import lombok.RequiredArgsConstructor;
@@ -31,6 +32,7 @@ public class DailyProfitBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final DailyProfitRepository dailyProfitRepository;
+    private final BatchRetryPolicy batchRetryPolicy;
 
     @Bean
     public Job dailyProfitJob() {
@@ -46,6 +48,9 @@ public class DailyProfitBatch {
                 .reader(dailyProfitItemReader(null))
                 .processor(dailyProfitItemProcessor())
                 .writer(dailyProfitItemWriter())
+                .faultTolerant()
+                .retryPolicy(batchRetryPolicy.retryPolicy())
+                .backOffPolicy(batchRetryPolicy.backOffPolicy())
                 .build();
     }
 

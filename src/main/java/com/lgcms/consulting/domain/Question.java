@@ -17,7 +17,7 @@ public class Question {
 
     private Long memberId;
 
-    private Long lectureId;
+    private String lectureId;
 
     private String title;
 

@@ -1,4 +1,4 @@
-package com.lgcms.consulting.config.batch;
+package com.lgcms.consulting.config.batch.utils;
 
 import com.lgcms.consulting.service.internal.lecture.RemoteLectureService;
 import com.lgcms.consulting.dto.response.lecture.RemoteLectureResponse.*;
@@ -30,10 +30,14 @@ public class CustomReader {
         return new CustomItemReader<>(() -> remoteLectureService.getReviewsFromLecture().getBody());
     }
 
-    public class CustomItemReader<T> implements ItemReader<T> {
+    public ItemReader<LectureProgressResponse> progressReader() {
+        return new CustomItemReader<>(() -> remoteLectureService.getProgressFromLecture().getBody());
+    }
+
+    public static class CustomItemReader<T> implements ItemReader<T> {
         private Integer count = 0;
         private List<T> items = null;
-        private Supplier<List<T>> fetchSupplier;
+        private final Supplier<List<T>> fetchSupplier;
 
         public CustomItemReader(Supplier<List<T>> fetchSupplier) {
             this.fetchSupplier = fetchSupplier;
@@ -50,7 +54,6 @@ public class CustomReader {
             else {
                 return null;
             }
-
         }
     }
 }
