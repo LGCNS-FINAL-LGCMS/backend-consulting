@@ -46,7 +46,7 @@ spring:
 
   ai:
     openai:
-      api-key: ${OPENAI_APIKEY}
+      api-key: openai_key
       embedding:
         options:
           model: text-embedding-3-small
@@ -57,7 +57,6 @@ spring:
         distance-type: cosine_distance
         dimensions: 1536
         initialize-schema: true
-        schema-validation: true
 
   cloud:
     openfeign:
