@@ -59,7 +59,7 @@ public class MonthlyProfitStatusBatch {
             @Value("#{jobParameters['datetime']}") LocalDateTime today
     ) {
         return new JdbcCursorItemReaderBuilder<MonthlyProfitStatusDTO>()
-                .name("dailyProfitItemReader")
+                .name("monthlyProfitStatusItemReader")
                 .dataSource(dataSource)
                 .sql("""
                         SELECT l.title, SUM(l.price) as profit, l.member_id
