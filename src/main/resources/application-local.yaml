@@ -44,20 +44,6 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
-  ai:
-    openai:
-      api-key: ${OPENAI_APIKEY}
-      embedding:
-        options:
-          model: text-embedding-3-small
-
-    vectorstore:
-      pgvector:
-        index-type: hnsw
-        distance-type: cosine_distance
-        dimensions: 1536
-        initialize-schema: true
-
   cloud:
     openfeign:
       client:
