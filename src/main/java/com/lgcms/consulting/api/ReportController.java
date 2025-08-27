@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-@RequestMapping("/api/consulting/report")
+@RequestMapping("/consulting/report")
 @RestController
 @RequiredArgsConstructor
 public class ReportController {
@@ -18,6 +18,6 @@ public class ReportController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<ReportResponse>> getReport(@RequestHeader("X-USER-ID") Long id) {
-        return ResponseEntity.ok(BaseResponse.ok(bedrockService.getReport(id)));
+        return ResponseEntity.ok(BaseResponse.ok(bedrockService.getReportWithLock(id)));
     }
 }
