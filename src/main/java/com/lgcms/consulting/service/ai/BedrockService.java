@@ -1,7 +1,7 @@
 package com.lgcms.consulting.service.ai;
 
+import com.lgcms.consulting.common.annotation.DistributedLock;
 import com.lgcms.consulting.dto.response.report.ReportResponse;
-import com.lgcms.consulting.service.LockService;
 import com.lgcms.consulting.service.ai.tools.AgentTools;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
@@ -18,18 +18,9 @@ import static com.lgcms.consulting.service.ai.Prompts.REPORT_USER_PROMPT;
 public class BedrockService implements AiService {
     private final ChatClient chatClient;
     private final AgentTools agentTools;
-    private final LockService lockService;
-
-    public ReportResponse getReportWithLock(Long memberId) {
-        return lockService.executeWithLock(
-                "LecturerReport-" + memberId,
-                () -> getReport(memberId),
-                5L,
-                40L
-                );
-    }
 
     @Override
+    @DistributedLock(lockKey = "'LecturerReport-' + #memberId")
     public ReportResponse getReport(Long memberId) {
         String systemPrompt = REPORT_SYSTEM_PROMPT.message;
         String userPrompt = REPORT_USER_PROMPT.message;

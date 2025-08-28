@@ -18,6 +18,6 @@ public class ReportController {
 
     @GetMapping
     public ResponseEntity<BaseResponse<ReportResponse>> getReport(@RequestHeader("X-USER-ID") Long id) {
-        return ResponseEntity.ok(BaseResponse.ok(bedrockService.getReportWithLock(id)));
+        return ResponseEntity.ok(BaseResponse.ok(bedrockService.getReport(id)));
     }
 }
