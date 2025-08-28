@@ -20,7 +20,7 @@ public class BedrockService implements AiService {
     private final AgentTools agentTools;
 
     @Override
-    @DistributedLock(lockKey = "'LecturerReport-' + #memberId")
+    @DistributedLock(lockKey = "'LecturerReport-' + #memberId", waitTime = 10, leaseTime = 40)
     public ReportResponse getReport(Long memberId) {
         String systemPrompt = REPORT_SYSTEM_PROMPT.message;
         String userPrompt = REPORT_USER_PROMPT.message;
