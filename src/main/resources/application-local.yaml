@@ -57,3 +57,9 @@ spring:
     jdbc:
       initialize-schema: always
       schema: classpath:org/springframework/batch/core/schema-postgresql.sql
+
+  data:
+    redis:
+      host: localhost
+      port: 38122
+      database-lock: 7

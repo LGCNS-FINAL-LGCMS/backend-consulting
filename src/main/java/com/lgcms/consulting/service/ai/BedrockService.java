@@ -1,5 +1,6 @@
 package com.lgcms.consulting.service.ai;
 
+import com.lgcms.consulting.common.annotation.DistributedLock;
 import com.lgcms.consulting.dto.response.report.ReportResponse;
 import com.lgcms.consulting.service.ai.tools.AgentTools;
 import lombok.RequiredArgsConstructor;
@@ -19,6 +20,7 @@ public class BedrockService implements AiService {
     private final AgentTools agentTools;
 
     @Override
+    @DistributedLock(lockKey = "'LecturerReport-' + #memberId", waitTime = 10, leaseTime = 40)
     public ReportResponse getReport(Long memberId) {
         String systemPrompt = REPORT_SYSTEM_PROMPT.message;
         String userPrompt = REPORT_USER_PROMPT.message;
