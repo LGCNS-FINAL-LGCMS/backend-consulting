@@ -15,10 +15,13 @@ public class RedissonConfig {
     @Value("${spring.data.redis.port}")
     private int port;
 
+    @Value("${spring.data.redis.database-lock}")
+    private int database;
+
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + host + ":" + port);
+        config.useSingleServer().setAddress("redis://" + host + ":" + port).setDatabase(database);
         return Redisson.create(config);
     }
 }

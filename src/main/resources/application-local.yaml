@@ -62,3 +62,4 @@ spring:
     redis:
       host: localhost
       port: 38122
+      database-lock: 7
