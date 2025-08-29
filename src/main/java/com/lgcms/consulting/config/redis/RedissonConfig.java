@@ -21,7 +21,17 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer().setAddress("redis://" + host + ":" + port).setDatabase(database);
+        config.useSingleServer()
+                .setAddress("redis://" + host + ":" + port)
+                .setDatabase(database)
+                .setConnectionPoolSize(10)
+                .setConnectionMinimumIdleSize(5)
+                .setSubscriptionConnectionPoolSize(5)
+                .setSubscriptionConnectionMinimumIdleSize(1)
+                .setIdleConnectionTimeout(10000)
+                .setConnectTimeout(10000)
+                .setTimeout(3000);
+
         return Redisson.create(config);
     }
 }

@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface ReviewRepository extends JpaRepository<Review, Long> {
     @Query(value = """
-            SELECT r.content, r.star, r.details, r.etc, l.title
+            SELECT r.suggestion, r.star, r.difficulty, r.usefulness, l.title
             FROM review r JOIN lecture l ON r.lecture_id = l.id
             WHERE l.member_id = :memberId
             ORDER BY r.updated_at DESC
