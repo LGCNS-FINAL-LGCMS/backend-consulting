@@ -7,7 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@RequestMapping("/consulting/dashboard")
+@RequestMapping("/lecturer/consulting/dashboard")
 @RestController
 @RequiredArgsConstructor
 public class DashBoardController {
