@@ -1,20 +1,25 @@
 package com.lgcms.consulting.config.redis;
 
+import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.Resource;
 
 @Configuration
+@RequiredArgsConstructor
+@EnableConfigurationProperties(RedissonProperties.class)
 public class RedissonConfig {
+    private final RedissonProperties redissonProperties;
+
     @Value("${spring.data.redis.host}")
     private String host;
-
     @Value("${spring.data.redis.port}")
     private int port;
-
     @Value("${spring.data.redis.database-lock}")
     private int database;
 
@@ -24,13 +29,13 @@ public class RedissonConfig {
         config.useSingleServer()
                 .setAddress("redis://" + host + ":" + port)
                 .setDatabase(database)
-                .setConnectionPoolSize(10)
-                .setConnectionMinimumIdleSize(5)
-                .setSubscriptionConnectionPoolSize(5)
-                .setSubscriptionConnectionMinimumIdleSize(1)
-                .setIdleConnectionTimeout(10000)
-                .setConnectTimeout(10000)
-                .setTimeout(3000);
+                .setConnectionPoolSize(redissonProperties.getConnectionPoolSize())
+                .setConnectionMinimumIdleSize(redissonProperties.getConnectionMinimumIdleSize())
+                .setSubscriptionConnectionPoolSize(redissonProperties.getSubscriptionConnectionPoolSize())
+                .setSubscriptionConnectionMinimumIdleSize(redissonProperties.getSubscriptionConnectionMinimumIdleSize())
+                .setIdleConnectionTimeout(redissonProperties.getIdleConnectionTimeout())
+                .setConnectTimeout(redissonProperties.getConnectTimeout())
+                .setTimeout(redissonProperties.getTimeout());
 
         return Redisson.create(config);
     }
