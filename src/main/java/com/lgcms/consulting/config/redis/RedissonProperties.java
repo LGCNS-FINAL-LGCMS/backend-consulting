@@ -1,14 +1,15 @@
 package com.lgcms.consulting.config.redis;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.stereotype.Component;
 
 
-@ConfigurationProperties(prefix = "spring.data.redis.config")
 @Getter
-@AllArgsConstructor
+@Setter
+@ConfigurationProperties(prefix = "spring.data.redis.config")
+@NoArgsConstructor
 public class RedissonProperties {
     private int connectionPoolSize;
     private int connectionMinimumIdleSize;
