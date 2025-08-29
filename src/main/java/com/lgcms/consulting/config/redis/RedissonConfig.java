@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
+import org.redisson.config.TransportMode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -26,7 +27,8 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.useSingleServer()
+        config.setTransportMode(TransportMode.NIO)
+                .useSingleServer()
                 .setAddress("redis://" + host + ":" + port)
                 .setDatabase(database)
                 .setConnectionPoolSize(redissonProperties.getConnectionPoolSize())
