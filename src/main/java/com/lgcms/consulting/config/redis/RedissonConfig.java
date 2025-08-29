@@ -27,8 +27,7 @@ public class RedissonConfig {
     @Bean
     public RedissonClient redissonClient() {
         Config config = new Config();
-        config.setTransportMode(TransportMode.NIO)
-                .useSingleServer()
+        config.useSingleServer()
                 .setAddress("redis://" + host + ":" + port)
                 .setDatabase(database)
                 .setConnectionPoolSize(redissonProperties.getConnectionPoolSize())
