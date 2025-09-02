@@ -7,6 +7,7 @@ import com.lgcms.consulting.repository.LecturerReportRepository;
 import com.lgcms.consulting.service.ai.tools.AgentTools;
 import lombok.RequiredArgsConstructor;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,12 +23,14 @@ public class BedrockService implements AiService {
     private final ChatClient chatClient;
     private final AgentTools agentTools;
     private final LecturerReportRepository lecturerReportRepository;
+    private final TokenUsageService tokenUsageService;
 
     @Override
     @DistributedLock(lockKey = "'LecturerReport-' + #memberId", waitTime = 10, leaseTime = 40)
     @Transactional
     public ReportResponse getReport(Long memberId) {
         LocalDateTime now = LocalDateTime.now();
+        LocalDateTime startDate = now.minusDays(30);
 
         LecturerReport report = lecturerReportRepository.findByMemberIdAndDate(memberId, now);
         if (report != null) {
@@ -38,24 +41,9 @@ public class BedrockService implements AiService {
                     .build();
         }
 
-        String systemPrompt = REPORT_SYSTEM_PROMPT.message;
-        String userPrompt = REPORT_USER_PROMPT.message;
-
-        LocalDateTime startDate = now.minusDays(30);
-
-        String response = chatClient.prompt()
-                .system(systemPrompt)
-                .user(userPrompt)
-                .tools(agentTools)
-                .toolContext(Map.of(
-                        "memberId", memberId,
-                        "startDate", startDate,
-                        "endDate", now
-                ))
-                .call()
-                .content();
-
-        ReportResponse structuredReport = getStructuredOutput(response);
+        ChatResponse response = getResponse(memberId, startDate, now);
+        tokenUsageService.saveTokenUsage(response, "getReport");
+        ReportResponse structuredReport = getStructuredOutput(response.getResult().getOutput().getText());
 
         lecturerReportRepository.save(
                 LecturerReport.builder()
@@ -79,5 +67,22 @@ public class BedrockService implements AiService {
                 .user(prompt)
                 .call()
                 .entity(ReportResponse.class);
+    }
+
+    ChatResponse getResponse(Long memberId, LocalDateTime startDate, LocalDateTime endDate) {
+        String systemPrompt = REPORT_SYSTEM_PROMPT.message;
+        String userPrompt = REPORT_USER_PROMPT.message;
+
+        return chatClient.prompt()
+                .system(systemPrompt)
+                .user(userPrompt)
+                .tools(agentTools)
+                .toolContext(Map.of(
+                        "memberId", memberId,
+                        "startDate", startDate,
+                        "endDate", endDate
+                ))
+                .call()
+                .chatResponse();
     }
 }
