@@ -71,3 +71,11 @@ spring:
         idleConnectionTimeout: 10000
         connectTimeout: 10000
         timeout: 3000
+management:
+  endpoints:
+    web:
+      exposure:
+        include: prometheus,health,info
+  metrics:
+    tags:
+      application: ${spring.application.name}
