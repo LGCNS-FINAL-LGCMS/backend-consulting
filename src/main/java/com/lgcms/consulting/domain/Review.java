@@ -22,7 +22,7 @@ public class Review {
 
     private String suggestion;
 
-    private Long star;
+    private Integer star;
 
     private String nickname;
 
@@ -31,6 +31,4 @@ public class Review {
     private Integer usefulness;
 
     private LocalDateTime createdAt;
-
-    private LocalDateTime updatedAt;
 }

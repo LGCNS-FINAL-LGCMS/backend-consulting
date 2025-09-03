@@ -13,7 +13,7 @@ public interface ReviewRepository extends JpaRepository<Review, Long> {
             SELECT r.suggestion, r.star, r.difficulty, r.usefulness, l.title
             FROM review r JOIN lecture l ON r.lecture_id = l.id
             WHERE l.member_id = :memberId
-            ORDER BY r.updated_at DESC
+            ORDER BY r.created_at DESC
             LIMIT 30
             """, nativeQuery = true)
     List<ReportDTO.ReviewData> findByLecturerId(
