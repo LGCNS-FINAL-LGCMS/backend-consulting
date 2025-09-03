@@ -15,8 +15,8 @@ public class DashBoardController {
     private final DashBoardService dashBoardService;
 
     @GetMapping
-    public ResponseEntity<BaseResponse<DashBoardDataResponse>> getDashBoardData(){
-        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getDashBoardData(829L)));
+    public ResponseEntity<BaseResponse<DashBoardDataResponse>> getDashBoardData(@RequestHeader("X-USER-ID") Long id){
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getDashBoardData(id)));
     }
 
     @GetMapping("/status/month")
