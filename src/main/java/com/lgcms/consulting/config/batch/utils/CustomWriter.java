@@ -17,15 +17,14 @@ public class CustomWriter {
     @Bean
     public JdbcBatchItemWriter<Lecture> lectureWriter() {
         String sql = """
-                INSERT INTO lecture (id, member_id, title, level, price, avg_rating, review_count, total_amount)
-                VALUES (:id, :memberId, :title, :level, :price, :avgRating, :reviewCount, :totalAmount)
+                INSERT INTO lecture (id, member_id, title, level, price, review_count, total_amount)
+                VALUES (:id, :memberId, :title, :level, :price, :reviewCount, :totalAmount)
                 ON CONFLICT (id)
                 DO UPDATE SET
                     member_id = EXCLUDED.member_id,
                     title = EXCLUDED.title,
                     level = EXCLUDED.level,
                     price = EXCLUDED.price,
-                    avg_rating = EXCLUDED.avg_rating,
                     review_count = EXCLUDED.review_count,
                     total_amount = EXCLUDED.total_amount
                 """;
@@ -59,15 +58,14 @@ public class CustomWriter {
     @Bean
     public JdbcBatchItemWriter<Question> questionWriter() {
         String sql = """
-                INSERT INTO question (id, member_id, lecture_id, title, created_at, updated_at)
-                VALUES (:id, :memberId, :lectureId, :title, :createdAt, :updatedAt)
+                INSERT INTO question (id, member_id, lecture_id, title, created_at)
+                VALUES (:id, :memberId, :lectureId, :title, :createdAt)
                 ON CONFLICT (id)
                 DO UPDATE SET
                     member_id = EXCLUDED.member_id,
                     lecture_id = EXCLUDED.lecture_id,
                     title = EXCLUDED.title,
-                    created_at = EXCLUDED.created_at,
-                    updated_at = EXCLUDED.updated_at
+                    created_at = EXCLUDED.created_at
                 """;
 
         return new JdbcBatchItemWriterBuilder<Question>()
@@ -80,8 +78,8 @@ public class CustomWriter {
     @Bean
     public JdbcBatchItemWriter<Review> reviewWriter() {
         String sql = """
-                INSERT INTO review (id, member_id, lecture_id, suggestion, star, nickname, difficulty, usefulness, created_at, updated_at)
-                VALUES (:id, :memberId, :lectureId, :suggestion, :star, :nickname, :difficulty, :usefulness, :createdAt, :updatedAt)
+                INSERT INTO review (id, member_id, lecture_id, suggestion, star, nickname, difficulty, usefulness, created_at)
+                VALUES (:id, :memberId, :lectureId, :suggestion, :star, :nickname, :difficulty, :usefulness, :createdAt)
                 ON CONFLICT (id)
                 DO UPDATE SET
                     member_id = EXCLUDED.member_id,
@@ -91,8 +89,7 @@ public class CustomWriter {
                     nickname = EXCLUDED.nickname,
                     difficulty = EXCLUDED.difficulty,
                     usefulness = EXCLUDED.usefulness,
-                    created_at = EXCLUDED.created_at,
-                    updated_at = EXCLUDED.updated_at
+                    created_at = EXCLUDED.created_at
                 """;
 
         return new JdbcBatchItemWriterBuilder<Review>()

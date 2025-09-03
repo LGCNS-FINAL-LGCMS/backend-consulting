@@ -14,6 +14,11 @@ public class DashBoardController {
 
     private final DashBoardService dashBoardService;
 
+    @GetMapping
+    public ResponseEntity<BaseResponse<DashBoardDataResponse>> getDashBoardData(){
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getDashBoardData(829L)));
+    }
+
     @GetMapping("/status/month")
     public ResponseEntity<BaseResponse<MonthlyStatusResponse>> getMonthlyStatus(@RequestHeader("X-USER-ID") Long id) {
         return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getMonthlyStatus(id)));
@@ -30,7 +35,7 @@ public class DashBoardController {
             @RequestParam(value = "title", defaultValue = "all", required = false) String title,
             @RequestParam("startDate") String startDate,
             @RequestParam("endDate") String endDate) {
-        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(title, startDate, endDate, id)));
+        return ResponseEntity.ok(BaseResponse.ok(dashBoardService.getProfitOverview(id)));
     }
 
     @GetMapping("/progress/complete")

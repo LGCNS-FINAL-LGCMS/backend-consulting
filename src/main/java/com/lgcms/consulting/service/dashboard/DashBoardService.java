@@ -30,16 +30,28 @@ public class DashBoardService {
     private final ProgressGroupRepository progressGroupRepository;
 
     @Transactional(readOnly = true)
+    public DashBoardDataResponse getDashBoardData(Long memberId) {
+        return new DashBoardDataResponse(
+                getMonthlyStatus(memberId),
+                getProfitDistribution(memberId),
+                getProfitOverview(memberId),
+                getCompleteProgress(memberId),
+                getProgressGroup(memberId, "all"),
+                getStudentLectureCount(memberId)
+                );
+    }
+
+    @Transactional(readOnly = true)
     public MonthlyStatusResponse getMonthlyStatus(Long memberId) {
         List<MonthlyProfitStatus> monthlyStatusItems = monthlyProfitStatusRepository.findByMemberId(memberId);
-        if (monthlyStatusItems.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+//        if (monthlyStatusItems.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
 
         Long total = monthlyStatusItems.stream().mapToLong(MonthlyProfitStatus::getMonthlyProfit).sum();
 
         return new MonthlyStatusResponse(total, monthlyStatusItems.stream().map(
-                item-> new PieChartData(item.getTitle(), item.getMonthlyProfit()))
+                        item -> new PieChartData(item.getTitle(), item.getMonthlyProfit()))
                 .toList());
     }
 
@@ -48,10 +60,10 @@ public class DashBoardService {
     public ProfitDistributionResponse getProfitDistribution(Long memberId) {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = now.minusWeeks(1);
-        List<DailyProfit> dailyProfits = dailyProfitRepository.findTop5ByMemberIdAndDayBetween(memberId, startDate, now);
-        if (dailyProfits.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+        List<DailyProfit> dailyProfits = dailyProfitRepository.findByMemberIdAndDayBetween(memberId, startDate, now);
+//        if (dailyProfits.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
         List<String> titles = dailyProfits.stream().map(DailyProfit::getTitle).distinct().toList();
 
         MultiValueMap<String, LectureProfitItem> profits = new LinkedMultiValueMap<>();
@@ -63,11 +75,13 @@ public class DashBoardService {
     }
 
     @Transactional(readOnly = true)
-    public ProfitOverviewResponse getProfitOverview(String title, String startDate, String endDate, Long memberId) {
-        List<DailyProfit> dailyProfits = dailyProfitRepository.findByTitleAndMemberIdAndDayBetween(title, memberId, LocalDate.parse(startDate).atStartOfDay(), LocalDate.parse(endDate).atStartOfDay());
-        if (dailyProfits.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+    public ProfitOverviewResponse getProfitOverview(Long memberId) {
+        LocalDateTime now = LocalDateTime.now();
+
+        List<DailyProfit> dailyProfits = dailyProfitRepository.findByTitleAndMemberIdAndDayBetween("all", memberId, now.minusDays(30),  now);
+//        if (dailyProfits.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
 
         return new ProfitOverviewResponse("매출", dailyProfits.stream().map(item -> new LineChartData(item.getDay().toLocalDate().toString(), item.getDailyProfit().toString())).toList());
     }
@@ -75,25 +89,25 @@ public class DashBoardService {
     @Transactional(readOnly = true)
     public CompleteProgressResponse getCompleteProgress(Long memberId) {
         List<CompleteProgress> responses = completeProgressRepository.findTop5CompleteProgressByMemberIdOrderByCompleteProgressDesc(memberId);
-        if (responses.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+//        if (responses.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
 
         return new CompleteProgressResponse("title", List.of("completeProgress"),
                 responses.stream().map(
-                        item ->
-                                new CompleteProgressData(item.getTitle(), item.getCompleteProgress().toString())
+                                item ->
+                                        new CompleteProgressData(item.getTitle(), item.getCompleteProgress().toString())
                         )
                         .toList()
-                );
+        );
     }
 
     @Transactional(readOnly = true)
     public ProgressGroupResponse getProgressGroup(Long memberId, String title) {
         List<ProgressGroup> responses = progressGroupRepository.findByMemberIdAndTitle(memberId, title);
-        if (responses.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+//        if (responses.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
         return new ProgressGroupResponse("rateGroup", List.of("studentCount"),
                 responses.stream().map(
                         item ->
@@ -105,9 +119,9 @@ public class DashBoardService {
     @Transactional(readOnly = true)
     public StudentLectureCountResponse getStudentLectureCount(Long memberId) {
         List<StudentLectureCount> studentLectureCount = studentLectureCountRepository.findByMemberId(memberId);
-        if (studentLectureCount.isEmpty()) {
-            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
-        }
+//        if (studentLectureCount.isEmpty()) {
+//            throw new BaseException(ConsultingError.DASHBOARD_DATA_NOT_FOUND);
+//        }
         List<PieChartData> response = studentLectureCount.stream()
                 .map(item ->
                         new PieChartData(item.getLectureCountGroup(), item.getStudentCount())

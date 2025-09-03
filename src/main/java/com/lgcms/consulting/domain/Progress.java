@@ -17,5 +17,5 @@ public class Progress {
 
     private String lectureId;
 
-    private Long progressRate;
+    private Integer progressRate;
 }

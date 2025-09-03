@@ -20,7 +20,6 @@ public class RemoteLectureResponse {
             String title,
             String level,
             Long price,
-            Long avgRating,
             Long reviewCount,
             Long totalAmount
     ) {
@@ -31,7 +30,6 @@ public class RemoteLectureResponse {
                     .title(title)
                     .level(level)
                     .price(price)
-                    .avgRating(avgRating)
                     .reviewCount(reviewCount)
                     .totalAmount(totalAmount)
                     .build();
@@ -42,7 +40,7 @@ public class RemoteLectureResponse {
         Long id,
         Long memberId,
         String lectureId,
-        Long progressRate
+        Integer progressRate
     ) {
         public Progress toEntity() {
             return Progress.builder()
@@ -59,8 +57,8 @@ public class RemoteLectureResponse {
             Long memberId,
             String lectureId,
             String title,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            String content,
+            LocalDateTime createdAt
     ) {
         public Question toEntity() {
             return Question.builder()
@@ -68,8 +66,8 @@ public class RemoteLectureResponse {
                     .memberId(memberId)
                     .lectureId(lectureId)
                     .title(title)
+                    .content(content)
                     .createdAt(createdAt)
-                    .updatedAt(updatedAt)
                     .build();
         }
     }
@@ -95,12 +93,11 @@ public class RemoteLectureResponse {
             Long memberId,
             String lectureId,
             String suggestion,
-            Long star,
+            Integer star,
             String nickname,
             Integer difficulty,
             Integer usefulness,
-            LocalDateTime createdAt,
-            LocalDateTime updatedAt
+            LocalDateTime createdAt
     ) {
         public Review toEntity() {
             return Review.builder()
@@ -113,7 +110,6 @@ public class RemoteLectureResponse {
                     .difficulty(difficulty)
                     .usefulness(usefulness)
                     .createdAt(createdAt)
-                    .updatedAt(updatedAt)
                     .build();
         }
     }

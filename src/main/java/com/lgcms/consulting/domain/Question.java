@@ -21,7 +21,7 @@ public class Question {
 
     private String title;
 
-    private LocalDateTime createdAt;
+    private String content;
 
-    private LocalDateTime updatedAt;
+    private LocalDateTime createdAt;
 }
