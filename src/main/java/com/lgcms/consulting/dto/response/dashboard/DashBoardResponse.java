@@ -4,6 +4,16 @@ import java.util.List;
 import java.util.Map;
 
 public class DashBoardResponse {
+    public record DashBoardDataResponse(
+            MonthlyStatusResponse monthlyStatusResponse,
+            ProfitDistributionResponse profitDistributionResponse,
+            ProfitOverviewResponse profitOverviewResponse,
+            CompleteProgressResponse completeProgressResponse,
+            ProgressGroupResponse progressGroupResponse,
+            StudentLectureCountResponse studentLectureCountResponse
+    ) {
+    }
+
     public record MonthlyStatusResponse(
             Long total,
             List<PieChartData> monthlyStatus

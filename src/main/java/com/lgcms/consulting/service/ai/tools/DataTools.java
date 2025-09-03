@@ -28,7 +28,7 @@ public class DataTools {
     @Tool(name = "fetchQuestionData", description = """
             Retrieves student question data for a specific instructor.
             """)
-    public List<String> fetchQuestionData(
+    public List<QuestionData> fetchQuestionData(
             ToolContext toolContext
     ) {
         return questionRepository.findByLecturerId((Long) toolContext.getContext().get("memberId"));

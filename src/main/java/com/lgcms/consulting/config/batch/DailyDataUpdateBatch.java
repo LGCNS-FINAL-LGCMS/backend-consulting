@@ -33,7 +33,7 @@ public class DailyDataUpdateBatch {
                 .next(questionUpdateStep())
                 .next(enrollmentUpdateStep())
                 .next(reviewUpdateStep())
-                .next(processUpdateStep())
+                .next(progressUpdateStep())
                 .build();
     }
 
@@ -90,8 +90,8 @@ public class DailyDataUpdateBatch {
     }
 
     @Bean
-    public Step processUpdateStep() {
-        return new StepBuilder("processUpdateStep", jobRepository)
+    public Step progressUpdateStep() {
+        return new StepBuilder("progressUpdateStep", jobRepository)
                 .<LectureProgressResponse, Progress>chunk(1000, transactionManager)
                 .reader(customReader.progressReader())
                 .processor(LectureProgressResponse::toEntity)

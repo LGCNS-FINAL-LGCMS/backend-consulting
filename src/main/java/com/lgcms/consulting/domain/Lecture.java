@@ -21,8 +21,6 @@ public class Lecture {
 
     private Long price;
 
-    private Long avgRating;
-
     private Long reviewCount;
 
     private Long totalAmount;
