@@ -1,6 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
-import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
+import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.config.batch.utils.CustomReader;
 import com.lgcms.consulting.config.batch.utils.CustomWriter;
 import com.lgcms.consulting.domain.*;
@@ -24,7 +24,7 @@ public class DailyDataUpdateBatch {
     private final PlatformTransactionManager transactionManager;
     private final CustomReader customReader;
     private final CustomWriter customWriter;
-    private final BatchRetryPolicy batchRetryPolicy;
+    private final BatchConfig batchConfig;
 
     @Bean
     public Job dailyDataUpdateJob() {
@@ -37,6 +37,7 @@ public class DailyDataUpdateBatch {
                 .build();
     }
 
+
     @Bean
     public Step lectureUpdateStep() {
         return new StepBuilder("lectureUpdateStep", jobRepository)
@@ -45,8 +46,9 @@ public class DailyDataUpdateBatch {
                 .processor(LectureMetaResponse::toEntity)
                 .writer(customWriter.lectureWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
@@ -58,21 +60,23 @@ public class DailyDataUpdateBatch {
                 .processor(LectureQuestionsResponse::toEntity)
                 .writer(customWriter.questionWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
     @Bean
     public Step enrollmentUpdateStep() {
         return new StepBuilder("enrollmentUpdateStep", jobRepository)
-                .<LectureEnrollmentsResponse, Enrollment>chunk(10000, transactionManager)
+                .<LectureEnrollmentsResponse, Enrollment>chunk(1000, transactionManager)
                 .reader(customReader.enrollmentReader())
                 .processor(LectureEnrollmentsResponse::toEntity)
                 .writer(customWriter.enrollmentWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
@@ -84,8 +88,9 @@ public class DailyDataUpdateBatch {
                 .processor(LectureReviewsResponse::toEntity)
                 .writer(customWriter.reviewWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
@@ -97,8 +102,9 @@ public class DailyDataUpdateBatch {
                 .processor(LectureProgressResponse::toEntity)
                 .writer(customWriter.progressWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 }
