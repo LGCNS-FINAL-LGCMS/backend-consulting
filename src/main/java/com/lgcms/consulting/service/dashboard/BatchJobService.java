@@ -12,7 +12,7 @@ import org.springframework.batch.core.launch.JobLauncher;
 import org.springframework.batch.core.launch.NoSuchJobException;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 
 @Service
 @RequiredArgsConstructor
@@ -21,10 +21,10 @@ public class BatchJobService {
     private final JobRegistry jobRegistry;
 
     public String launchJob(String jobName) {
-        LocalDateTime now = LocalDateTime.now();
+        LocalDate now = LocalDate.now();
 
         JobParameters jobParameters = new JobParametersBuilder()
-                .addLocalDateTime("datetime", now)
+                .addLocalDate("date", now)
                 .toJobParameters();
 
         try {

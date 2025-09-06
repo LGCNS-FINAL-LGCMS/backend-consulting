@@ -1,6 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
-import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
+import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.domain.DailyProfit;
 import com.lgcms.consulting.repository.DailyProfitRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,8 +22,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.time.LocalDateTime;
-import java.util.List;
+import java.time.LocalDate;
+
 
 @Configuration
 @RequiredArgsConstructor
@@ -32,7 +32,7 @@ public class DailyProfitBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final DailyProfitRepository dailyProfitRepository;
-    private final BatchRetryPolicy batchRetryPolicy;
+    private final BatchConfig batchConfig;
 
     @Bean
     public Job dailyProfitJob() {
@@ -49,15 +49,16 @@ public class DailyProfitBatch {
                 .processor(dailyProfitItemProcessor())
                 .writer(dailyProfitItemWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
     @Bean
     @StepScope
     public JdbcCursorItemReader<DailyProfitDTO> dailyProfitItemReader(
-            @Value("#{jobParameters['datetime']}") LocalDateTime today
+            @Value("#{jobParameters['date']}") LocalDate today
     ) {
         return new JdbcCursorItemReaderBuilder<DailyProfitDTO>()
                 .name("dailyProfitItemReader")

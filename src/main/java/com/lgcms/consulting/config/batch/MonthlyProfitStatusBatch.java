@@ -1,6 +1,6 @@
 package com.lgcms.consulting.config.batch;
 
-import com.lgcms.consulting.config.batch.utils.BatchRetryPolicy;
+import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.domain.MonthlyProfitStatus;
 import com.lgcms.consulting.repository.MonthlyProfitStatusRepository;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +21,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Configuration
@@ -31,7 +31,7 @@ public class MonthlyProfitStatusBatch {
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
     private final MonthlyProfitStatusRepository monthlyProfitStatusRepository;
-    private final BatchRetryPolicy batchRetryPolicy;
+    private final BatchConfig batchConfig;
 
     @Bean
     public Job monthlyProfitStatusJob() {
@@ -48,15 +48,16 @@ public class MonthlyProfitStatusBatch {
                 .processor(monthlyProfitStatusItemProcessor())
                 .writer(monthlyProfitStatusItemWriter())
                 .faultTolerant()
-                .retryPolicy(batchRetryPolicy.retryPolicy())
-                .backOffPolicy(batchRetryPolicy.backOffPolicy())
+                .retryPolicy(batchConfig.retryPolicy())
+                .backOffPolicy(batchConfig.backOffPolicy())
+                .taskExecutor(batchConfig.taskExecutor())
                 .build();
     }
 
     @Bean
     @StepScope
     public JdbcCursorItemReader<MonthlyProfitStatusDTO> monthlyProfitStatusItemReader(
-            @Value("#{jobParameters['datetime']}") LocalDateTime today
+            @Value("#{jobParameters['date']}") LocalDate today
     ) {
         return new JdbcCursorItemReaderBuilder<MonthlyProfitStatusDTO>()
                 .name("monthlyProfitStatusItemReader")
