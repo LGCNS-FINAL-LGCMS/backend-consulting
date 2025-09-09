@@ -77,13 +77,12 @@
 
 ### Middleware
 
-[](https://img.shields.io/badge/opentelemetry-white?style=for-the-badge&logo=opentelemetry&logoColor=yellow&labelColor=blue&color=yellow)
+![OpenTelemetry](https://img.shields.io/badge/OpenTelemetry-FFB01F?style=flat-square&logo=opentelemetry&logoColor=black)
 
 ### Database
 
-[](https://img.shields.io/badge/Redis-red?style=for-the-badge&logo=Redis&logoColor=ffffff&labelColor=ff4438&color=ff4438)
-
-[](https://img.shields.io/badge/Postgresql-blue?style=for-the-badge&logo=postgresql&logoColor=ffffff)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=flat-square&logo=redis&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=flat-square&logo=postgresql&logoColor=white)
 
 ---
 
