@@ -14,6 +14,8 @@ import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -51,11 +53,12 @@ public class ProgressGroupBatch {
     }
 
     @Bean
-    public JdbcCursorItemReader<ProgressGroupDTO> progressGroupItemReader() {
-        return new JdbcCursorItemReaderBuilder<ProgressGroupDTO>()
-                .name("progressGroupItemReader")
-                .dataSource(dataSource)
-                .sql("""
+    public SynchronizedItemStreamReader<ProgressGroupDTO> progressGroupItemReader() {
+        JdbcCursorItemReader<ProgressGroupDTO> cursorItemReader =
+                new JdbcCursorItemReaderBuilder<ProgressGroupDTO>()
+                        .name("progressGroupItemReader")
+                        .dataSource(dataSource)
+                        .sql("""
                         WITH base AS (
                             SELECT
                                 CASE
@@ -84,8 +87,12 @@ public class ProgressGroupBatch {
                         GROUP BY rate_group, member_id, ROLLUP (title)
                         ORDER BY rate_group, title;
                         """)
-                .fetchSize(1000)
-                .dataRowMapper(ProgressGroupDTO.class)
+                        .fetchSize(1000)
+                        .dataRowMapper(ProgressGroupDTO.class)
+                        .build();
+
+        return new SynchronizedItemStreamReaderBuilder<ProgressGroupDTO>()
+                .delegate(cursorItemReader)
                 .build();
     }
 

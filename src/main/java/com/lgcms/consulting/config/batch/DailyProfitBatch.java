@@ -15,6 +15,8 @@ import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,26 +59,31 @@ public class DailyProfitBatch {
 
     @Bean
     @StepScope
-    public JdbcCursorItemReader<DailyProfitDTO> dailyProfitItemReader(
+    public SynchronizedItemStreamReader<DailyProfitDTO> dailyProfitItemReader(
             @Value("#{jobParameters['date']}") LocalDate today
     ) {
-        return new JdbcCursorItemReaderBuilder<DailyProfitDTO>()
-                .name("dailyProfitItemReader")
-                .dataSource(dataSource)
-                .sql("""
-                        SELECT
-                            l.member_id,
-                            DATE(e.enrollment_at) AS day,
-                            COALESCE(l.title, 'all') AS title,
-                            SUM(l.price) AS profit
-                        FROM enrollment e
-                                 JOIN lecture l ON e.lecture_id = l.id
-                        GROUP BY DATE(e.enrollment_at), l.member_id, ROLLUP(l.title)
-                        ORDER BY day, l.member_id, title;
-                        """)
+        JdbcCursorItemReader<DailyProfitDTO> cursorItemReader =
+                new JdbcCursorItemReaderBuilder<DailyProfitDTO>()
+                        .name("dailyProfitItemReader")
+                        .dataSource(dataSource)
+                        .sql("""
+                                SELECT
+                                    l.member_id,
+                                    DATE(e.enrollment_at) AS day,
+                                    COALESCE(l.title, 'all') AS title,
+                                    SUM(l.price) AS profit
+                                FROM enrollment e
+                                         JOIN lecture l ON e.lecture_id = l.id
+                                GROUP BY DATE(e.enrollment_at), l.member_id, ROLLUP(l.title)
+                                ORDER BY day, l.member_id, title;
+                                """)
 //                .queryArguments(List.of(today.toLocalDate()))
-                .fetchSize(1000)
-                .dataRowMapper(DailyProfitDTO.class)
+                        .fetchSize(1000)
+                        .dataRowMapper(DailyProfitDTO.class)
+                        .build();
+
+        return new SynchronizedItemStreamReaderBuilder<DailyProfitDTO>()
+                .delegate(cursorItemReader)
                 .build();
     }
 

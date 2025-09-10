@@ -1,5 +1,6 @@
 package com.lgcms.consulting.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -20,6 +21,7 @@ public class Review {
 
     private String lectureId;
 
+    @Column(columnDefinition = "TEXT")
     private String suggestion;
 
     private Integer star;

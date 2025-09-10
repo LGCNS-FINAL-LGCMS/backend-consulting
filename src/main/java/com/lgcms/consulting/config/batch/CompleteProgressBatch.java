@@ -14,6 +14,8 @@ import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -51,19 +53,24 @@ public class CompleteProgressBatch {
     }
 
     @Bean
-    public JdbcCursorItemReader<CompleteProgressDTO> completeProgressItemReader() {
-        return new JdbcCursorItemReaderBuilder<CompleteProgressDTO>()
-                .name("completeProgressItemReader")
-                .dataSource(dataSource)
-                .sql("""
-                        SELECT l.title, l.member_id,
-                               ROUND(COUNT(CASE WHEN p.progress_rate > 90 THEN 1 END) * 100.0 / COUNT(*))::bigint AS complete_progress
-                        FROM progress p
-                                 JOIN Lecture l ON p.lecture_id = l.id
-                        GROUP BY l.title, l.member_id;
-                        """)
-                .fetchSize(1000)
-                .dataRowMapper(CompleteProgressDTO.class)
+    public SynchronizedItemStreamReader<CompleteProgressDTO> completeProgressItemReader() {
+        JdbcCursorItemReader<CompleteProgressDTO> cursorItemReader =
+                new JdbcCursorItemReaderBuilder<CompleteProgressDTO>()
+                        .name("completeProgressItemReader")
+                        .dataSource(dataSource)
+                        .sql("""
+                                SELECT l.title, l.member_id,
+                                       ROUND(COUNT(CASE WHEN p.progress_rate > 90 THEN 1 END) * 100.0 / COUNT(*))::bigint AS complete_progress
+                                FROM progress p
+                                         JOIN Lecture l ON p.lecture_id = l.id
+                                GROUP BY l.title, l.member_id;
+                                """)
+                        .fetchSize(1000)
+                        .dataRowMapper(CompleteProgressDTO.class)
+                        .build();
+
+        return new SynchronizedItemStreamReaderBuilder<CompleteProgressDTO>()
+                .delegate(cursorItemReader)
                 .build();
     }
 
