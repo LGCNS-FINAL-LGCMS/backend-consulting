@@ -14,6 +14,8 @@ import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -51,11 +53,12 @@ public class StudentLectureCountBatch {
     }
 
     @Bean
-    public JdbcCursorItemReader<StudentLectureCountDTO> studentLectureCountItemReader() {
-        return new JdbcCursorItemReaderBuilder<StudentLectureCountDTO>()
-                .name("studentLectureCountItemReader")
-                .dataSource(dataSource)
-                .sql("""
+    public SynchronizedItemStreamReader<StudentLectureCountDTO> studentLectureCountItemReader() {
+        JdbcCursorItemReader<StudentLectureCountDTO> cursorItemReader =
+                new JdbcCursorItemReaderBuilder<StudentLectureCountDTO>()
+                        .name("studentLectureCountItemReader")
+                        .dataSource(dataSource)
+                        .sql("""
                         WITH student_lecture_counts AS (SELECT l.member_id,
                                                                e.student_id,
                                                                COUNT(*) AS lecture_count
@@ -79,8 +82,12 @@ public class StudentLectureCountBatch {
                                           )
                         GROUP BY b.label, slc.member_id
                         """)
-                .fetchSize(1000)
-                .dataRowMapper(StudentLectureCountDTO.class)
+                        .fetchSize(1000)
+                        .dataRowMapper(StudentLectureCountDTO.class)
+                        .build();
+
+        return new SynchronizedItemStreamReaderBuilder<StudentLectureCountDTO>()
+                .delegate(cursorItemReader)
                 .build();
     }
 

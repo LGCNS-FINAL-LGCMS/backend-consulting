@@ -1,5 +1,6 @@
 package com.lgcms.consulting.domain;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import lombok.*;
@@ -21,6 +22,7 @@ public class Question {
 
     private String title;
 
+    @Column(columnDefinition = "TEXT")
     private String content;
 
     private LocalDateTime createdAt;

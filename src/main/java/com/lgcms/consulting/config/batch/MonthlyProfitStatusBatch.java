@@ -15,6 +15,8 @@ import org.springframework.batch.item.data.RepositoryItemWriter;
 import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
+import org.springframework.batch.item.support.SynchronizedItemStreamReader;
+import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -56,22 +58,27 @@ public class MonthlyProfitStatusBatch {
 
     @Bean
     @StepScope
-    public JdbcCursorItemReader<MonthlyProfitStatusDTO> monthlyProfitStatusItemReader(
+    public SynchronizedItemStreamReader<MonthlyProfitStatusDTO> monthlyProfitStatusItemReader(
             @Value("#{jobParameters['date']}") LocalDate today
     ) {
-        return new JdbcCursorItemReaderBuilder<MonthlyProfitStatusDTO>()
-                .name("monthlyProfitStatusItemReader")
-                .dataSource(dataSource)
-                .sql("""
-                        SELECT l.title, SUM(l.price) as profit, l.member_id
-                        FROM enrollment e JOIN lecture l ON e.lecture_id = l.id
-                        WHERE e.enrollment_at BETWEEN ? AND ?
-                        GROUP BY l.title, l.member_id
-                        ORDER BY l.title
-                        """)
-                .queryArguments(List.of(today.withDayOfMonth(1), today))
-                .fetchSize(1000)
-                .dataRowMapper(MonthlyProfitStatusDTO.class)
+        JdbcCursorItemReader<MonthlyProfitStatusDTO> cursorItemReader =
+                new JdbcCursorItemReaderBuilder<MonthlyProfitStatusDTO>()
+                        .name("monthlyProfitStatusItemReader")
+                        .dataSource(dataSource)
+                        .sql("""
+                                SELECT l.title, SUM(l.price) as profit, l.member_id
+                                FROM enrollment e JOIN lecture l ON e.lecture_id = l.id
+                                WHERE e.enrollment_at BETWEEN ? AND ?
+                                GROUP BY l.title, l.member_id
+                                ORDER BY l.title
+                                """)
+                        .queryArguments(List.of(today.withDayOfMonth(1), today))
+                        .fetchSize(1000)
+                        .dataRowMapper(MonthlyProfitStatusDTO.class)
+                        .build();
+
+        return new SynchronizedItemStreamReaderBuilder<MonthlyProfitStatusDTO>()
+                .delegate(cursorItemReader)
                 .build();
     }
 
