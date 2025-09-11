@@ -2,7 +2,6 @@ package com.lgcms.consulting.config.batch;
 
 import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.domain.DailyProfit;
-import com.lgcms.consulting.repository.DailyProfitRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -11,9 +10,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
@@ -24,7 +23,7 @@ import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
 import java.sql.Timestamp;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 
 @Configuration
@@ -33,7 +32,6 @@ public class DailyProfitBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
-    private final DailyProfitRepository dailyProfitRepository;
     private final BatchConfig batchConfig;
 
     @Bean
@@ -60,7 +58,7 @@ public class DailyProfitBatch {
     @Bean
     @StepScope
     public SynchronizedItemStreamReader<DailyProfitDTO> dailyProfitItemReader(
-            @Value("#{jobParameters['date']}") LocalDate today
+            @Value("#{jobParameters['datetime']}") LocalDateTime today
     ) {
         JdbcCursorItemReader<DailyProfitDTO> cursorItemReader =
                 new JdbcCursorItemReaderBuilder<DailyProfitDTO>()
@@ -98,9 +96,19 @@ public class DailyProfitBatch {
     }
 
     @Bean
-    public RepositoryItemWriter<DailyProfit> dailyProfitItemWriter() {
-        return new RepositoryItemWriterBuilder<DailyProfit>()
-                .repository(dailyProfitRepository)
+    public JdbcBatchItemWriter<DailyProfit> dailyProfitItemWriter() {
+        String sql = """
+                INSERT INTO daily_profit (member_id, day, title, profit)
+                VALUES (:memberId, :day, :title, :dailyProfit)
+                ON CONFLICT (member_id, day, title)
+                DO UPDATE SET
+                    profit = EXCLUDED.profit
+                """;
+
+        return new JdbcBatchItemWriterBuilder<DailyProfit>()
+                .dataSource(dataSource)
+                .sql(sql)
+                .beanMapped()
                 .build();
     }
 

@@ -2,7 +2,6 @@ package com.lgcms.consulting.config.batch;
 
 import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.domain.MonthlyProfitStatus;
-import com.lgcms.consulting.repository.MonthlyProfitStatusRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -11,9 +10,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
@@ -23,7 +22,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.PlatformTransactionManager;
 
 import javax.sql.DataSource;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Configuration
@@ -32,7 +31,6 @@ public class MonthlyProfitStatusBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
-    private final MonthlyProfitStatusRepository monthlyProfitStatusRepository;
     private final BatchConfig batchConfig;
 
     @Bean
@@ -59,7 +57,7 @@ public class MonthlyProfitStatusBatch {
     @Bean
     @StepScope
     public SynchronizedItemStreamReader<MonthlyProfitStatusDTO> monthlyProfitStatusItemReader(
-            @Value("#{jobParameters['date']}") LocalDate today
+            @Value("#{jobParameters['datetime']}") LocalDateTime today
     ) {
         JdbcCursorItemReader<MonthlyProfitStatusDTO> cursorItemReader =
                 new JdbcCursorItemReaderBuilder<MonthlyProfitStatusDTO>()
@@ -92,9 +90,19 @@ public class MonthlyProfitStatusBatch {
     }
 
     @Bean
-    public RepositoryItemWriter<MonthlyProfitStatus> monthlyProfitStatusItemWriter() {
-        return new RepositoryItemWriterBuilder<MonthlyProfitStatus>()
-                .repository(monthlyProfitStatusRepository)
+    public JdbcBatchItemWriter<MonthlyProfitStatus> monthlyProfitStatusItemWriter() {
+        String sql = """
+                INSERT INTO monthly_profit_status (member_id, title, profit)
+                VALUES (:memberId, :title, :monthlyProfit)
+                ON CONFLICT (member_id, title)
+                DO UPDATE SET
+                    profit = EXCLUDED.profit
+                """;
+
+        return new JdbcBatchItemWriterBuilder<MonthlyProfitStatus>()
+                .dataSource(dataSource)
+                .sql(sql)
+                .beanMapped()
                 .build();
     }
 
