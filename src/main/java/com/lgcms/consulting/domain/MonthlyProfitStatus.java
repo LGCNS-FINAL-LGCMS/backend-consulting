@@ -11,6 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_monthly_profit_member_title",
+                columnNames = {"memberId", "title"})
+})
 public class MonthlyProfitStatus {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

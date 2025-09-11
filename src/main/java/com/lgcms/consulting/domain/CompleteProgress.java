@@ -1,9 +1,6 @@
 package com.lgcms.consulting.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,6 +11,10 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_complete_progress_member_title",
+                columnNames = {"memberId", "title"})
+})
 public class CompleteProgress {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
