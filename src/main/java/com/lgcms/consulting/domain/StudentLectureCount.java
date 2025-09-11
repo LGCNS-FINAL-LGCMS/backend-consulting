@@ -11,15 +11,17 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_student_lecture_count_member_group",
+                columnNames = {"memberId", "lectureCountGroup"})
+})
 public class StudentLectureCount {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "member_id", unique = true)
     private Long memberId;
 
-    @Column(name = "lecture_count_group", unique = true)
     private String lectureCountGroup;
 
     private Long studentCount;

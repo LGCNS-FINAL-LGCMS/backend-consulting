@@ -13,18 +13,19 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(uniqueConstraints = {
+        @UniqueConstraint(name = "uk_daily_profit_member_day_title",
+                columnNames = {"memberId", "day", "title"})
+})
 public class DailyProfit {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "member_id", unique = true)
     private Long memberId;
 
-    @Column(name = "day", unique = true)
     private LocalDateTime day;
 
-    @Column(name = "title", unique = true)
     private String title;
 
     @Column(name = "profit")
