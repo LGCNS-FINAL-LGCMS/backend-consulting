@@ -16,10 +16,12 @@ public class MonthlyProfitStatus {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "member_id", unique = true)
     private Long memberId;
 
     @Column(name = "profit")
     private Long monthlyProfit;
 
+    @Column(name = "title", unique = true)
     private String title;
 }

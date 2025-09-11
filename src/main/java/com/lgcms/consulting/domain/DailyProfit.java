@@ -18,10 +18,13 @@ public class DailyProfit {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "member_id", unique = true)
     private Long memberId;
 
+    @Column(name = "day", unique = true)
     private LocalDateTime day;
 
+    @Column(name = "title", unique = true)
     private String title;
 
     @Column(name = "profit")

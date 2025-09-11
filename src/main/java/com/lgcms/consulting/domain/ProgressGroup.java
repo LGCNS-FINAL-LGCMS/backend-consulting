@@ -1,9 +1,6 @@
 package com.lgcms.consulting.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,10 +17,13 @@ public class ProgressGroup {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "rate_group", unique = true)
     private String rateGroup;
 
+    @Column(name = "title", unique = true)
     private String title;
 
+    @Column(name = "member_id", unique = true)
     private Long memberId;
 
     private Long studentCount;

@@ -1,9 +1,6 @@
 package com.lgcms.consulting.domain;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,8 +16,10 @@ public class StudentLectureCount {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column(name = "member_id", unique = true)
     private Long memberId;
 
+    @Column(name = "lecture_count_group", unique = true)
     private String lectureCountGroup;
 
     private Long studentCount;
