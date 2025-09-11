@@ -6,6 +6,7 @@ import com.lgcms.consulting.dto.response.report.ReportResponse;
 import com.lgcms.consulting.repository.LecturerReportRepository;
 import com.lgcms.consulting.service.ai.tools.AgentTools;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,7 @@ import static com.lgcms.consulting.service.ai.Prompts.REPORT_USER_PROMPT;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class BedrockService implements AiService {
     private final ChatClient chatClient;
     private final LecturerReportRepository lecturerReportRepository;
@@ -49,8 +51,21 @@ public class BedrockService implements AiService {
                 "endDate", now
                 );
 
-        ChatResponse response = llmCallService.getResponseWithTool(systemPrompt,userPrompt, agentTools, context);
-        ReportResponse structuredReport = getStructuredOutput(response.getResult().getOutput().getText());
+        ChatResponse response = null;
+
+        try{
+            response = llmCallService.getResponseWithTool(systemPrompt,userPrompt, agentTools, context);
+        } catch (Exception e){
+            log.error(e.getMessage());
+            throw e;
+        }
+        ReportResponse structuredReport = null;
+        try {
+            structuredReport = getStructuredOutput(response.getResult().getOutput().getText());
+        } catch (Exception e) {
+            log.error(e.getMessage());
+            throw e;
+        }
 
 //        lecturerReportRepository.save(
 //                LecturerReport.builder()
