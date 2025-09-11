@@ -32,14 +32,14 @@ public class BedrockService implements AiService {
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime startDate = now.minusDays(30);
 
-        LecturerReport report = lecturerReportRepository.findByMemberIdAndDate(memberId, now);
-        if (report != null) {
-            return ReportResponse.builder()
-                    .reviewAnalysisResult(report.getReviewAnalysisResult())
-                    .qnaAnalysisResult(report.getQnaAnalysisResult())
-                    .overallAnalysisResult(report.getOverallAnalysisResult())
-                    .build();
-        }
+//        LecturerReport report = lecturerReportRepository.findByMemberIdAndDate(memberId, now);
+//        if (report != null) {
+//            return ReportResponse.builder()
+//                    .reviewAnalysisResult(report.getReviewAnalysisResult())
+//                    .qnaAnalysisResult(report.getQnaAnalysisResult())
+//                    .overallAnalysisResult(report.getOverallAnalysisResult())
+//                    .build();
+//        }
 
         String systemPrompt = REPORT_SYSTEM_PROMPT.message;
         String userPrompt = REPORT_USER_PROMPT.message;
@@ -52,14 +52,14 @@ public class BedrockService implements AiService {
         ChatResponse response = llmCallService.getResponseWithTool(systemPrompt,userPrompt, agentTools, context);
         ReportResponse structuredReport = getStructuredOutput(response.getResult().getOutput().getText());
 
-        lecturerReportRepository.save(
-                LecturerReport.builder()
-                        .memberId(memberId)
-                        .reviewAnalysisResult(structuredReport.getReviewAnalysisResult())
-                        .qnaAnalysisResult(structuredReport.getQnaAnalysisResult())
-                        .overallAnalysisResult(structuredReport.getOverallAnalysisResult())
-                        .build()
-        );
+//        lecturerReportRepository.save(
+//                LecturerReport.builder()
+//                        .memberId(memberId)
+//                        .reviewAnalysisResult(structuredReport.getReviewAnalysisResult())
+//                        .qnaAnalysisResult(structuredReport.getQnaAnalysisResult())
+//                        .overallAnalysisResult(structuredReport.getOverallAnalysisResult())
+//                        .build()
+//        );
 
         return structuredReport;
     }

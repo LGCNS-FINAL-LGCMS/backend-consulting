@@ -2,7 +2,6 @@ package com.lgcms.consulting.config.batch;
 
 import com.lgcms.consulting.config.batch.utils.BatchConfig;
 import com.lgcms.consulting.domain.ProgressGroup;
-import com.lgcms.consulting.repository.ProgressGroupRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.batch.core.Job;
 import org.springframework.batch.core.Step;
@@ -10,9 +9,9 @@ import org.springframework.batch.core.job.builder.JobBuilder;
 import org.springframework.batch.core.repository.JobRepository;
 import org.springframework.batch.core.step.builder.StepBuilder;
 import org.springframework.batch.item.ItemProcessor;
-import org.springframework.batch.item.data.RepositoryItemWriter;
-import org.springframework.batch.item.data.builder.RepositoryItemWriterBuilder;
+import org.springframework.batch.item.database.JdbcBatchItemWriter;
 import org.springframework.batch.item.database.JdbcCursorItemReader;
+import org.springframework.batch.item.database.builder.JdbcBatchItemWriterBuilder;
 import org.springframework.batch.item.database.builder.JdbcCursorItemReaderBuilder;
 import org.springframework.batch.item.support.SynchronizedItemStreamReader;
 import org.springframework.batch.item.support.builder.SynchronizedItemStreamReaderBuilder;
@@ -28,7 +27,6 @@ public class ProgressGroupBatch {
     private final JobRepository jobRepository;
     private final PlatformTransactionManager transactionManager;
     private final DataSource dataSource;
-    private final ProgressGroupRepository progressGroupRepository;
     private final BatchConfig batchConfig;
 
     @Bean
@@ -107,9 +105,19 @@ public class ProgressGroupBatch {
     }
 
     @Bean
-    public RepositoryItemWriter<ProgressGroup> progressGroupItemWriter() {
-        return new RepositoryItemWriterBuilder<ProgressGroup>()
-                .repository(progressGroupRepository)
+    public JdbcBatchItemWriter<ProgressGroup> progressGroupItemWriter() {
+        String sql = """
+            INSERT INTO progress_group (rate_group, title, member_id, student_count)
+            VALUES (:rateGroup, :title, :memberId, :studentCount)
+            ON CONFLICT (rate_group, title, member_id)
+            DO UPDATE SET
+                student_count = EXCLUDED.student_count
+            """;
+
+        return new JdbcBatchItemWriterBuilder<ProgressGroup>()
+                .dataSource(dataSource)
+                .sql(sql)
+                .beanMapped()
                 .build();
     }
 
